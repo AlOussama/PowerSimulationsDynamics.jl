@@ -36,19 +36,19 @@ Pref_change = ControlReferenceChange(1.0, gen2, :P_ref, 0.9);
         sim = Simulation!(ResidualModel, sys, path, tspan, Pref_change)
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in test25_x0_init
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
         @test small_sig.stable
 
         # Solve problem in equilibrium
-        @test execute!(sim, Sundials.IDA(), dtmax = 0.01, saveat = 0.01) ==
+        @test execute!(sim, Sundials.IDA(); dtmax = 0.01, saveat = 0.01) ==
               PSID.SIMULATION_FINALIZED
         results = read_results(sim)
 
@@ -63,11 +63,11 @@ Pref_change = ControlReferenceChange(1.0, gen2, :P_ref, 0.9);
         v_pscad = M[:, 2]
 
         # Relaxed constraint to account for mismatch in damping
-        @test LinearAlgebra.norm(v - v_pscad) <= 0.05
+        @test LinearAlgebra.norm(v - v_pscad) <= 0.1
         @test LinearAlgebra.norm(t - round.(t_pscad, digits = 3)) == 0.0
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end
 
@@ -79,19 +79,19 @@ end
         sim = Simulation!(MassMatrixModel, sys, path, tspan, Pref_change)
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in test25_x0_init
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
         @test small_sig.stable
 
         # Solve problem in equilibrium
-        @test execute!(sim, Rodas4(), dtmax = 0.01, saveat = 0.01) ==
+        @test execute!(sim, Rodas4(); dtmax = 0.01, saveat = 0.01) ==
               PSID.SIMULATION_FINALIZED
         results = read_results(sim)
 
@@ -106,10 +106,10 @@ end
         v_pscad = M[:, 2]
 
         # Relaxed constraint to account for mismatch in damping
-        @test LinearAlgebra.norm(v - v_pscad) <= 0.05
+        @test LinearAlgebra.norm(v - v_pscad) <= 0.1
         @test LinearAlgebra.norm(t - round.(t_pscad, digits = 3)) == 0.0
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end

@@ -13,10 +13,12 @@ dyr_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/TGOV1/ThreeBus_TGOV1.dyr")
 csv_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/TGOV1/TEST_TGOV1.csv")
 
 @testset "Test 21 SteamTurbineGov1 ResidualModel" begin
-    path = (joinpath(pwd(), "test-psse-tgov1"))
-    !isdir(path) && mkdir(path)
+    path = mktempdir()
     try
         sys = System(raw_file, dyr_file)
+        for l in get_components(PSY.StandardLoad, sys)
+            transform_load_to_constant_impedance(l)
+        end
 
         # Define Simulation Problem
         sim = Simulation!(
@@ -28,13 +30,13 @@ csv_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/TGOV1/TEST_TGOV1.csv")
         )
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in test_psse_tgov1_init
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
 
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
@@ -45,7 +47,7 @@ csv_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/TGOV1/TEST_TGOV1.csv")
         @test LinearAlgebra.norm(eigs - test22_eigvals) < 1e-3
 
         # Solve problem
-        @test execute!(sim, IDA(), dtmax = 0.005, saveat = 0.005) ==
+        @test execute!(sim, IDA(); dtmax = 0.005, saveat = 0.005) ==
               PSID.SIMULATION_FINALIZED
         results = read_results(sim)
 
@@ -53,6 +55,9 @@ csv_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/TGOV1/TEST_TGOV1.csv")
         series = get_state_series(results, ("generator-102-1", :δ))
         t = series[1]
         δ = series[2]
+
+        # TODO: Test mechanical torque in PSSE
+        _, τm = get_mechanical_torque_series(results, "generator-102-1")
 
         # Obtain PSSE results
         t_psse, δ_psse = get_csv_delta(csv_file)
@@ -63,7 +68,7 @@ csv_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/TGOV1/TEST_TGOV1.csv")
         @test LinearAlgebra.norm(t - round.(t_psse, digits = 3)) == 0.0
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end
 
@@ -72,6 +77,9 @@ end
     !isdir(path) && mkdir(path)
     try
         sys = System(raw_file, dyr_file)
+        for l in get_components(PSY.StandardLoad, sys)
+            transform_load_to_constant_impedance(l)
+        end
 
         # Define Simulation Problem
         sim = Simulation!(
@@ -83,13 +91,13 @@ end
         )
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in test_psse_tgov1_init
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
 
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
@@ -100,7 +108,7 @@ end
         @test LinearAlgebra.norm(eigs - test22_eigvals) < 1e-3
 
         # Solve problem
-        @test execute!(sim, Rodas4(), dtmax = 0.005, saveat = 0.005) ==
+        @test execute!(sim, Rodas4(); dtmax = 0.005, saveat = 0.005) ==
               PSID.SIMULATION_FINALIZED
         results = read_results(sim)
 
@@ -108,6 +116,9 @@ end
         series = get_state_series(results, ("generator-102-1", :δ))
         t = series[1]
         δ = series[2]
+
+        # TODO: Test mechanical torque in PSSE
+        _, τm = get_mechanical_torque_series(results, "generator-102-1")
 
         # Obtain PSSE results
         t_psse, δ_psse = get_csv_delta(csv_file)
@@ -118,6 +129,6 @@ end
         @test LinearAlgebra.norm(t - round.(t_psse, digits = 3)) == 0.0
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end

@@ -3,10 +3,10 @@ using NLsolve
 const PSY = PowerSystems
 
 include(joinpath(dirname(@__FILE__), "dynamic_test_data.jl"))
-include(joinpath(dirname(@__FILE__), "data_utils.jl"))
+
 ############### Data Network ########################
 omib_file_dir = joinpath(dirname(@__FILE__), "OMIB_DARCO_PSR.raw")
-omib_sys = System(omib_file_dir, runchecks = false)
+omib_sys = System(omib_file_dir; runchecks = false)
 add_source_to_ref(omib_sys)
 
 ############### Data Dynamic devices ########################
@@ -21,6 +21,10 @@ function inv_gfoll(static_device)
         reduced_pll(),
         filt_gfoll(),
     ) #pss
+end
+
+for l in get_components(PSY.StandardLoad, omib_sys)
+    transform_load_to_constant_impedance(l)
 end
 
 #Attach dynamic generator. Currently use PSS/e format based on bus #.

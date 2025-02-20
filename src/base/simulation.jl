@@ -7,13 +7,14 @@ mutable struct Simulation{T <: SimulationModel}
     x0_init::Vector{Float64}
     initialized::Bool
     tstops::Vector{Float64}
-    callbacks::DiffEqBase.CallbackSet
+    callbacks::Vector
     simulation_folder::String
     inputs::Union{Nothing, SimulationInputs}
     results::Union{Nothing, SimulationResults}
     console_level::Base.CoreLogging.LogLevel
     file_level::Base.CoreLogging.LogLevel
     multimachine::Bool
+    frequency_reference::Union{ConstantFrequency, ReferenceBus}
 end
 
 get_system(sim::Simulation) = sim.sys
@@ -31,6 +32,7 @@ function Simulation(
     simulation_folder,
     console_level,
     file_level,
+    frequency_reference,
 ) where {T <: SimulationModel}
     PSY.set_units_base_system!(sys, "DEVICE_BASE")
 
@@ -43,13 +45,14 @@ function Simulation(
         initial_conditions,
         !initialize_simulation,
         Vector{Float64}(),
-        DiffEqBase.CallbackSet(),
+        Vector{SciMLBase.AbstractDiscreteCallback}(),
         simulation_folder,
         nothing,
         nothing,
         console_level,
         file_level,
         false,
+        frequency_reference,
     )
 end
 
@@ -85,23 +88,23 @@ end
         kwargs...,
     end
 
-Builds the simulation object and conducts the indexing process. The original system is not modified and a copy its created and stored in the Simulation.
+Builds the simulation object and conducts the indexing process. The initial conditions are stored in the system.
 
 # Arguments:
-- `::SimulationModel` : Type of Simulation Model. `ResidualModel` or `MassMatrixModel`. See [Models Section](https://nrel-siip.github.io/PowerSimulationsDynamics.jl/stable/models/) for more details
+- `::SimulationModel` : Type of Simulation Model. `ResidualModel` or `MassMatrixModel`. See [Models Section](https://nrel-sienna.github.io/PowerSimulationsDynamics.jl/stable/models/) for more details
 - `system::PowerSystems.System` : System data
 - `simulation_folder::String` : Folder directory
 - `tspan::NTuple{2, Float64}` : Time span for simulation
 - `perturbations::Vector{<:Perturbation}` : Vector of Perturbations for the Simulation. Default: No Perturbations
 - `initialize_simulation::Bool` : Runs the initialization routine. If false, simulation runs based on the operation point stored in System
 - `initial_conditions::Vector{Float64}` : Allows the user to pass a vector with the initial condition values desired in the simulation. If initialize_simulation = true, these values are used as a first guess and overwritten.
-- `frequency_reference` : Default `ReferenceBus`. Determines which frequency model is used for the network. Currently there are two options available: 
+- `frequency_reference` : Default `ReferenceBus`. Determines which frequency model is used for the network. Currently there are two options available:
     - `ConstantFrequency` assumes that the network frequency is 1.0 per unit at all times.
-    - `ReferenceBus` will use the frequency state of a Dynamic Generator (rotor speed) or Dynamic Inverter (virtual speed) connected to the Reference Bus (defined in the Power Flow data) as the network frequency. If multiple devices are connected to such bus, the device with larger base power will be used as a reference. If a Voltage Source is connected to the Reference Bus, then a `ConstantFrequency` model will be used. 
+    - `ReferenceBus` will use the frequency state of a Dynamic Generator (rotor speed) or Dynamic Inverter (virtual speed) connected to the Reference Bus (defined in the Power Flow data) as the network frequency. If multiple devices are connected to such bus, the device with larger base power will be used as a reference. If a Voltage Source is connected to the Reference Bus, then a `ConstantFrequency` model will be used.
 - `system_to_file::Bool` : Default `false`. Serializes the initialized system
 - `console_level::Logging` : Default `Logging.Warn`. Sets the level of logging output to the console. Can be set to `Logging.Error`, `Logging.Warn`, `Logging.Info` or `Logging.Debug`
-- `file_level::Logging` : Default `Logging.Debug`. Sets the level of logging output to file. Can be set to `Logging.Error`, `Logging.Warn`, `Logging.Info` or `Logging.Debug`
-- `disable_timer_output::Bool` : Default `false`. Allows the user to display timer information about the construction and initilization of the Simulation.
+- `file_level::Logging` : Default `Logging.Info`. Sets the level of logging output to file. Can be set to `Logging.Error`, `Logging.Warn`, `Logging.Info` or `Logging.Debug`
+- `disable_timer_outputs::Bool` : Default `false`. Allows the user to display timer information about the construction and initilization of the Simulation.
 """
 function Simulation!(
     ::Type{T},
@@ -111,7 +114,6 @@ function Simulation!(
     perturbations::Vector{<:Perturbation} = Vector{Perturbation}();
     kwargs...,
 ) where {T <: SimulationModel}
-    check_folder(simulation_folder)
     # Instantiates the Simulation object
     sim = Simulation(
         T,
@@ -122,7 +124,8 @@ function Simulation!(
         simulation_folder = simulation_folder,
         perturbations = perturbations,
         console_level = get(kwargs, :console_level, Logging.Warn),
-        file_level = get(kwargs, :file_level, Logging.Debug),
+        file_level = get(kwargs, :file_level, Logging.Info),
+        frequency_reference = get(kwargs, :frequency_reference, ReferenceBus()),
     )
 
     build!(sim; kwargs...)
@@ -142,23 +145,23 @@ end
         kwargs...,
     end
 
-Builds the simulation object and conducts the indexing process. The initial conditions are stored in the system.
+Builds the simulation object and conducts the indexing process. The original system is not modified and a copy its created and stored in the Simulation.
 
 # Arguments:
-- `::SimulationModel` : Type of Simulation Model. `ResidualModel` or `MassMatrixModel`. See [Models Section](https://nrel-siip.github.io/PowerSimulationsDynamics.jl/stable/models/) for more details
+- `::SimulationModel` : Type of Simulation Model. `ResidualModel` or `MassMatrixModel`. See [Models Section](https://nrel-sienna.github.io/PowerSimulationsDynamics.jl/stable/models/) for more details
 - `system::PowerSystems.System` : System data
 - `simulation_folder::String` : Folder directory
 - `tspan::NTuple{2, Float64}` : Time span for simulation
 - `perturbations::Vector{<:Perturbation}` : Vector of Perturbations for the Simulation. Default: No Perturbations
 - `initialize_simulation::Bool` : Runs the initialization routine. If false, simulation runs based on the operation point stored in System
 - `initial_conditions::Vector{Float64}` : Allows the user to pass a vector with the initial condition values desired in the simulation. If initialize_simulation = true, these values are used as a first guess and overwritten.
-- `frequency_reference` : Default `ReferenceBus`. Determines which frequency model is used for the network. Currently there are two options available: 
+- `frequency_reference` : Default `ReferenceBus`. Determines which frequency model is used for the network. Currently there are two options available:
     - `ConstantFrequency` assumes that the network frequency is 1.0 per unit at all times.
-    - `ReferenceBus` will use the frequency state of a Dynamic Generator (rotor speed) or Dynamic Inverter (virtual speed) connected to the Reference Bus (defined in the Power Flow data) as the network frequency. If multiple devices are connected to such bus, the device with larger base power will be used as a reference. If a Voltage Source is connected to the Reference Bus, then a `ConstantFrequency` model will be used. 
+    - `ReferenceBus` will use the frequency state of a Dynamic Generator (rotor speed) or Dynamic Inverter (virtual speed) connected to the Reference Bus (defined in the Power Flow data) as the network frequency. If multiple devices are connected to such bus, the device with larger base power will be used as a reference. If a Voltage Source is connected to the Reference Bus, then a `ConstantFrequency` model will be used.
 - `system_to_file::Bool` : Default `false`. Serializes the initialized system
 - `console_level::Logging` : Default `Logging.Warn`. Sets the level of logging output to the console. Can be set to `Logging.Error`, `Logging.Warn`, `Logging.Info` or `Logging.Debug`
-- `file_level::Logging` : Default `Logging.Debug`. Sets the level of logging output to file. Can be set to `Logging.Error`, `Logging.Warn`, `Logging.Info` or `Logging.Debug`
-- `disable_timer_output::Bool` : Default `false`. Allows the user to display timer information about the construction and initilization of the Simulation.
+- `file_level::Logging` : Default `Logging.Info`. Sets the level of logging output to file. Can be set to `Logging.Error`, `Logging.Warn`, `Logging.Info` or `Logging.Debug`
+- `disable_timer_outputs::Bool` : Default `false`. Allows the user to display timer information about the construction and initilization of the Simulation.
 """
 function Simulation(
     ::Type{T},
@@ -168,7 +171,6 @@ function Simulation(
     perturbations::Vector{<:Perturbation} = Vector{Perturbation}();
     kwargs...,
 ) where {T <: SimulationModel}
-    check_folder(simulation_folder)
     simulation_system = deepcopy(system)
     # Instantiates the Simulation object
     sim = Simulation(
@@ -180,7 +182,8 @@ function Simulation(
         simulation_folder = simulation_folder,
         perturbations = perturbations,
         console_level = get(kwargs, :console_level, Logging.Warn),
-        file_level = get(kwargs, :file_level, Logging.Debug),
+        file_level = get(kwargs, :file_level, Logging.Info),
+        frequency_reference = get(kwargs, :frequency_reference, ReferenceBus()),
     )
     build!(sim; kwargs...)
     if get(kwargs, :system_to_file, false)
@@ -191,14 +194,16 @@ end
 
 function reset!(sim::Simulation{T}) where {T <: SimulationModel}
     @info "Rebuilding the simulation after reset"
-    sim.inputs = SimulationInputs(T(), get_system(sim), sim.inputs.tspan)
+    sim.inputs = SimulationInputs(T, get_system(sim), sim.frequency_reference)
+    sim.status = BUILD_INCOMPLETE
+    sim.initialized = false
     build!(sim)
     @info "Simulation reset to status $(sim.status)"
     return
 end
 
 function configure_logging(sim::Simulation, file_mode; kwargs...)
-    return IS.configure_logging(
+    return IS.configure_logging(;
         console = true,
         console_stream = stderr,
         console_level = get(kwargs, :console_level, sim.console_level),
@@ -212,12 +217,9 @@ function configure_logging(sim::Simulation, file_mode; kwargs...)
     )
 end
 
-function _build_inputs!(
-    sim::Simulation{T},
-    frequency_reference,
-) where {T <: SimulationModel}
+function _build_inputs!(sim::Simulation{T}) where {T <: SimulationModel}
     simulation_system = get_system(sim)
-    sim.inputs = SimulationInputs(T, simulation_system, frequency_reference)
+    sim.inputs = SimulationInputs(T, simulation_system, sim.frequency_reference)
     @debug "Simulation Inputs Created"
     return
 end
@@ -261,53 +263,76 @@ function _pre_initialize_simulation!(sim::Simulation)
     _initialize_state_space(sim)
     if sim.initialized != true
         @info("Pre-Initializing Simulation States")
-        sim.initialized = precalculate_initial_conditions!(sim)
+        sim.initialized = precalculate_initial_conditions!(sim.x0_init, sim)
         if !sim.initialized
             error(
                 "The simulation failed to find an adequate initial guess for the initialization. Check the intialization routine.",
             )
         end
     else
-        @warn(
-            "No Pre-initialization conducted. If this is unexpected, check the initialization keywords"
-        )
+        @warn("Using existing initial conditions value for simulation initialization")
         sim.status = SIMULATION_INITIALIZED
     end
     return
 end
 
-function _get_jacobian(sim::Simulation{T}) where {T <: SimulationModel}
+function _get_jacobian(sim::Simulation{ResidualModel})
     inputs = get_simulation_inputs(sim)
     x0_init = get_initial_conditions(sim)
-    return JacobianFunctionWrapper(T(inputs, x0_init, JacobianCache), x0_init)
+    return JacobianFunctionWrapper(
+        ResidualModel(inputs, x0_init, JacobianCache),
+        x0_init,
+        # sparse_retrieve_loop = 0,
+    )
+end
+
+function _get_jacobian(sim::Simulation{MassMatrixModel})
+    inputs = get_simulation_inputs(sim)
+    x0_init = get_initial_conditions(sim)
+    return JacobianFunctionWrapper(
+        MassMatrixModel(inputs, x0_init, JacobianCache),
+        x0_init,
+    )
 end
 
 function _build_perturbations!(sim::Simulation)
     @info "Attaching Perturbations"
     if isempty(sim.perturbations)
         @debug "The simulation has no perturbations"
-        return DiffEqBase.CallbackSet(), [0.0]
+        return SciMLBase.CallbackSet(), [0.0]
     end
     inputs = get_simulation_inputs(sim)
     perturbations = sim.perturbations
     perturbations_count = length(perturbations)
-    callback_vector = Vector{DiffEqBase.DiscreteCallback}(undef, perturbations_count)
-    tstops = Vector{Float64}(undef, perturbations_count)
+    callback_vector = Vector{SciMLBase.DiscreteCallback}(undef, perturbations_count)
+    tstops = Float64[]
     for (ix, pert) in enumerate(perturbations)
-        @debug pert
-        condition = (x, t, integrator) -> t in [pert.time]
-        affect = get_affect(inputs, get_system(sim), pert)
-        callback_vector[ix] = DiffEqBase.DiscreteCallback(condition, affect)
-        tstops[ix] = pert.time
+        _add_callback!(tstops, callback_vector, ix, pert, sim, inputs)
     end
     sim.tstops = tstops
-    sim.callbacks = DiffEqBase.CallbackSet((), tuple(callback_vector...))
+    sim.callbacks = callback_vector
+    return
+end
+
+function _add_callback!(
+    tstops::Vector{Float64},
+    callback_vector::Vector{SciMLBase.DiscreteCallback},
+    ix::Int,
+    pert::T,
+    sim::Simulation,
+    inputs::SimulationInputs,
+) where {T <: Perturbation}
+    @debug pert
+    condition = (x, t, integrator) -> t in [pert.time]
+    affect = get_affect(inputs, get_system(sim), pert)
+    callback_vector[ix] = SciMLBase.DiscreteCallback(condition, affect)
+    push!(tstops, pert.time)
     return
 end
 
 function _get_diffeq_problem(
     sim::Simulation,
-    model::SystemModel{ResidualModel},
+    model::SystemModel{ResidualModel, NoDelays},
     jacobian::JacobianFunctionWrapper,
 )
     x0 = get_initial_conditions(sim)
@@ -316,15 +341,14 @@ function _get_diffeq_problem(
     sim.problem = SciMLBase.DAEProblem(
         SciMLBase.DAEFunction{true}(
             model;
-            # Currently commented for Sundials compatibility
-            #jac = jacobian,
+            jac = jacobian,
             tgrad = (dT, u, p, t) -> dT .= false,
-            #jac_prototype = jacobian.Jv,
+            jac_prototype = jacobian.Jv,
         ),
         dx0,
         x0,
         get_tspan(sim),
-        simulation_inputs,
+        simulation_inputs;
         differential_vars = get_DAE_vector(simulation_inputs),
     )
     sim.status = BUILT
@@ -333,13 +357,13 @@ end
 
 function _get_diffeq_problem(
     sim::Simulation,
-    model::SystemModel{MassMatrixModel},
+    model::SystemModel{MassMatrixModel, NoDelays},
     jacobian::JacobianFunctionWrapper,
 )
     simulation_inputs = get_simulation_inputs(sim)
     sim.problem = SciMLBase.ODEProblem(
         SciMLBase.ODEFunction{true}(
-            model,
+            model;
             mass_matrix = get_mass_matrix(simulation_inputs),
             jac = jacobian,
             jac_prototype = jacobian.Jv,
@@ -354,40 +378,72 @@ function _get_diffeq_problem(
     return
 end
 
+function get_history_function(simulation_inputs::Simulation{MassMatrixModel})
+    x0 = get_initial_conditions(simulation_inputs)
+    h(p, t; idxs = nothing) = typeof(idxs) <: Number ? x0[idxs] : x0
+    return h
+end
+
+function _get_diffeq_problem(
+    sim::Simulation,
+    model::SystemModel{MassMatrixModel, HasDelays},
+    jacobian::JacobianFunctionWrapper,
+)
+    simulation_inputs = get_simulation_inputs(sim)
+    h = get_history_function(sim)
+    sim.problem = SciMLBase.DDEProblem(
+        SciMLBase.DDEFunction{true}(
+            model;
+            mass_matrix = get_mass_matrix(simulation_inputs),
+            jac = jacobian,
+            jac_prototype = jacobian.Jv,
+        ),
+        sim.x0_init,
+        h,
+        get_tspan(sim),
+        simulation_inputs;
+        constant_lags = filter!(x -> x != 0, unique(simulation_inputs.delays)),
+    )
+    sim.status = BUILT
+
+    return
+end
+
 function _build!(sim::Simulation{T}; kwargs...) where {T <: SimulationModel}
     check_kwargs(kwargs, SIMULATION_ACCEPTED_KWARGS, "Simulation")
     # Branches are a super set of Lines. Passing both kwargs will
     # be redundant.
-    TimerOutputs.reset_timer!(BUILD_TIMER)
     if get(kwargs, :disable_timer_outputs, false)
-        TimerOutputs.disable_timer!(BUILD_PROBLEMS_TIMER)
+        TimerOutputs.disable_timer!(BUILD_TIMER)
+    else
+        TimerOutputs.enable_timer!(BUILD_TIMER)
+        TimerOutputs.reset_timer!(BUILD_TIMER)
     end
 
     TimerOutputs.@timeit BUILD_TIMER "Build Simulation" begin
-        if get(kwargs, :all_branches_dynamic, false)
-            TimerOutputs.@timeit BUILD_TIMER "AC Branch Transform to Dynamic" begin
-                sys = get_system(sim)
-                transform_branches_to_dynamic(sys, PSY.ACBranch)
+        try
+            if get(kwargs, :all_branches_dynamic, false)
+                TimerOutputs.@timeit BUILD_TIMER "AC Branch Transform to Dynamic" begin
+                    sys = get_system(sim)
+                    transform_branches_to_dynamic(sys, PSY.ACBranch)
+                end
+            elseif get(kwargs, :all_lines_dynamic, false)
+                TimerOutputs.@timeit BUILD_TIMER "Line Transform to Dynamic" begin
+                    sys = get_system(sim)
+                    transform_branches_to_dynamic(sys, PSY.Line)
+                end
             end
-        elseif get(kwargs, :all_lines_dynamic, false)
-            TimerOutputs.@timeit BUILD_TIMER "Line Transform to Dynamic" begin
-                sys = get_system(sim)
-                transform_branches_to_dynamic(sys, PSY.Line)
+            TimerOutputs.@timeit BUILD_TIMER "Build Simulation Inputs" begin
+                _build_inputs!(sim)
+                sim.multimachine =
+                    get_global_vars_update_pointers(sim.inputs)[GLOBAL_VAR_SYS_FREQ_INDEX] !=
+                    0
             end
-        end
-        TimerOutputs.@timeit BUILD_TIMER "Build Simulation Inputs" begin
-            f_ref = get(kwargs, :frequency_reference, ReferenceBus)
-            _build_inputs!(sim, f_ref)
-            # TODO: Update and store f_ref somewhere.
-            sim.multimachine =
-                get_global_vars_update_pointers(sim.inputs)[GLOBAL_VAR_SYS_FREQ_INDEX] != 0
-        end
-        TimerOutputs.@timeit BUILD_TIMER "Pre-initialization" begin
-            _pre_initialize_simulation!(sim)
-        end
-        if sim.status != BUILD_FAILED
-            simulation_inputs = get_simulation_inputs(sim)
-            try
+            TimerOutputs.@timeit BUILD_TIMER "Pre-initialization" begin
+                _pre_initialize_simulation!(sim)
+            end
+            if sim.status != BUILD_FAILED
+                simulation_inputs = get_simulation_inputs(sim)
                 TimerOutputs.@timeit BUILD_TIMER "Calculate Jacobian" begin
                     jacobian = _get_jacobian(sim)
                 end
@@ -404,13 +460,13 @@ function _build!(sim::Simulation{T}; kwargs...) where {T <: SimulationModel}
                     _get_diffeq_problem(sim, model, jacobian)
                 end
                 @info "Simulations status = $(sim.status)"
-            catch e
-                bt = catch_backtrace()
-                @error "$T failed to build" exception = e, bt
-                sim.status = BUILD_FAILED
+            else
+                @error "The simulation couldn't be initialized correctly. Simulations status = $(sim.status)"
             end
-        else
-            @error "The simulation couldn't be initialized correctly. Simulations status = $(sim.status)"
+        catch e
+            bt = catch_backtrace()
+            @error "$T failed to build" exception = e, bt
+            sim.status = BUILD_FAILED
         end
     end
     return
@@ -418,40 +474,36 @@ end
 
 function build!(sim; kwargs...)
     logger = configure_logging(sim, "w")
-    try
-        Logging.with_logger(logger) do
-            _build!(sim; kwargs...)
-        end
-    catch e
-        @error "Build failed" exception = (e, catch_backtrace())
-        return sim.status
-    finally
+    Logging.with_logger(logger) do
+        _build!(sim; kwargs...)
+        #if sim.status == BUILT
         string_buffer = IOBuffer()
         TimerOutputs.print_timer(
             string_buffer,
-            BUILD_TIMER,
+            BUILD_TIMER;
             sortby = :firstexec,
             compact = true,
         )
         @info "\n$(String(take!(string_buffer)))\n"
-        close(logger)
+        #end
     end
-    return
+    close(logger)
+    return sim.status
 end
 
-function simulation_pre_step!(sim::Simulation, reset_sim::Bool)
-    reset_sim = sim.status == CONVERTED_FOR_SMALL_SIGNAL || reset_sim
+function simulation_pre_step!(sim::Simulation)
     if sim.status == BUILD_FAILED
         error(
             "The Simulation status is $(sim.status). Can not continue, correct your inputs and build the simulation again.",
         )
-    elseif sim.status != BUILT && !reset_sim
-        error(
-            "The Simulation status is $(sim.status). Use keyword argument reset_simulation = true",
-        )
+    elseif sim.status == BUILT
+        @debug "Simulation status is $(sim.status)."
+    elseif sim.status == SIMULATION_FINALIZED
+        reset!(sim)
+        @info "The Simulation status is $(sim.status). Resetting the simulation"
+    else
+        error("Simulation status is $(sim.status). Can't continue.")
     end
-
-    reset_sim && reset!(sim)
     return
 end
 
@@ -461,31 +513,44 @@ function _prog_meter_enabled()
            (get(ENV, "RUNNING_PSID_TESTS", nothing) != "true")
 end
 
+function _filter_kwargs(kwargs)
+    return Dict(k => v for (k, v) in kwargs if in(k, DIFFEQ_SOLVE_KWARGS))
+end
+
 function _execute!(sim::Simulation, solver; kwargs...)
     @debug "status before execute" sim.status
-    simulation_pre_step!(sim, get(kwargs, :reset_simulation, false))
+    simulation_pre_step!(sim)
     sim.status = SIMULATION_STARTED
     time_log = Dict{Symbol, Any}()
+    if get(kwargs, :auto_abstol, false)
+        cb = AutoAbstol(true, get(kwargs, :abstol, 1e-9))
+        callbacks = SciMLBase.CallbackSet((), tuple(push!(sim.callbacks, cb)...))
+    else
+        callbacks = SciMLBase.CallbackSet((), tuple(sim.callbacks...))
+    end
+
     solution,
     time_log[:timed_solve_time],
     time_log[:solve_bytes_alloc],
     time_log[:sec_in_gc] = @timed SciMLBase.solve(
         sim.problem,
         solver;
-        callback = sim.callbacks,
-        tstops = sim.tstops,
+        callback = callbacks,
+        tstops = !isempty(sim.tstops) ? [sim.tstops[1] ÷ 2, sim.tstops...] : [],
         progress = get(kwargs, :enable_progress_bar, _prog_meter_enabled()),
         progress_steps = 1,
-        kwargs...,
+        advance_to_tstop = !isempty(sim.tstops),
+        initializealg = SciMLBase.NoInit(),
+        _filter_kwargs(kwargs)...,
     )
-    if solution.retcode == :Success
+    sim.results = SimulationResults(
+        get_simulation_inputs(sim),
+        get_system(sim),
+        time_log,
+        solution,
+    )
+    if SciMLBase.successful_retcode(solution)
         sim.status = SIMULATION_FINALIZED
-        sim.results = SimulationResults(
-            get_simulation_inputs(sim),
-            get_system(sim),
-            time_log,
-            solution,
-        )
     else
         @error("The simulation failed with return code $(solution.retcode)")
         sim.status = SIMULATION_FAILED
@@ -509,17 +574,16 @@ Solves the time-domain dynamic simulation model.
 """
 function execute!(sim::Simulation, solver; kwargs...)
     logger = configure_logging(sim, "a"; kwargs...)
-    try
-        Logging.with_logger(logger) do
+    Logging.with_logger(logger) do
+        try
             _execute!(sim, solver; kwargs...)
+        catch e
+            @error "Execution failed" exception = (e, catch_backtrace())
+            sim.status = SIMULATION_FAILED
         end
-    catch e
-        @error "Execution failed" exception = (e, catch_backtrace())
-        return sim.status = SIMULATION_FAILED
-    finally
-        close(logger)
-        return sim.status
     end
+    close(logger)
+    return sim.status
 end
 
 function read_results(sim::Simulation)

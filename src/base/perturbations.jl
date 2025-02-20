@@ -55,6 +55,14 @@ function _get_branch_for_perturbation(
     if perturbation.branch_type == PSY.DynamicBranch
         error("DynamicBranch is not supported currently with perturbation $T")
     end
+
+    if length(PSY.get_components(perturbation.branch_type, sys)) < 1
+        error(
+            "The system does not contain branches type $(perturbation.branch_type). \\
+      If used all_branches_dynamic or all_lines_dynamic make sure the branch $(perturbation.branch_name) was not converted",
+        )
+    end
+
     branch = PSY.get_component(perturbation.branch_type, sys, perturbation.branch_name)
     if branch === nothing || !PSY.get_available(branch)
         throw(
@@ -143,7 +151,7 @@ end
 
 function ybus_update!(
     ybus::SparseArrays.SparseMatrixCSC{Float64, Int},
-    b::PSY.ACBranch,
+    b::PSY.Line,
     num_bus::Dict{Int, Int},
     mult::Float64,
 )
@@ -180,6 +188,43 @@ end
 
 function ybus_update!(
     ybus::SparseArrays.SparseMatrixCSC{Float64, Int},
+    b::PSY.Transformer2W,
+    num_bus::Dict{Int, Int},
+    mult::Float64,
+)
+    arc = PSY.get_arc(b)
+    bus_from_no = num_bus[PSY.get_number(arc.from)]
+    bus_to_no = num_bus[arc.to.number]
+    n_buses = length(num_bus)
+
+    Y_l = (1 / (PSY.get_r(b) + PSY.get_x(b) * 1im))
+
+    Y11_real = mult * real(Y_l)
+    Y11_imag = mult * imag(Y_l) - PSY.get_primary_shunt(b)
+    Y22_real = mult * real(Y_l)
+    Y22_imag = mult * imag(Y_l)
+    Y12_real = Y21_real = -mult * real(Y_l)
+    Y12_imag = Y21_imag = -mult * imag(Y_l)
+
+    _record_change!(
+        ybus,
+        bus_from_no,
+        bus_to_no,
+        n_buses,
+        Y11_real,
+        Y11_imag,
+        Y22_real,
+        Y22_imag,
+        Y12_real,
+        Y21_real,
+        Y12_imag,
+        Y21_imag,
+    )
+    return
+end
+
+function ybus_update!(
+    ybus::SparseArrays.SparseMatrixCSC{Float64, Int},
     b::PSY.TapTransformer,
     num_bus::Dict{Int, Int},
     mult::Float64,
@@ -187,6 +232,7 @@ function ybus_update!(
     arc = PSY.get_arc(b)
     bus_from_no = num_bus[PSY.get_number(arc.from)]
     bus_to_no = num_bus[arc.to.number]
+    n_buses = length(num_bus)
 
     Y_t = 1 / (PSY.get_r(b) + PSY.get_x(b) * 1im)
     c = 1 / PSY.get_tap(b)
@@ -194,10 +240,10 @@ function ybus_update!(
 
     Y11 = (Y_t * c^2)
     Y21 = Y12 = (-Y_t * c)
-    Y22 = Y_t + (1im * b)
+    Y22 = Y_t
 
     Y11_real = mult * real(Y11)
-    Y11_imag = mult * imag(Y12)
+    Y11_imag = mult * imag(Y12) - b
     Y22_real = mult * real(Y22)
     Y22_imag = mult * imag(Y22)
     Y12_real = -mult * real(Y12)
@@ -231,6 +277,7 @@ function ybus_update!(
     arc = PSY.get_arc(b)
     bus_from_no = num_bus[PSY.get_number(arc.from)]
     bus_to_no = num_bus[arc.to.number]
+    n_buses = length(num_bus)
 
     Y_t = 1 / (PSY.get_r(b) + PSY.get_x(b) * 1im)
     tap = (PSY.get_tap(b) * exp(PSY.get_α(b) * 1im))
@@ -243,7 +290,7 @@ function ybus_update!(
     Y22 = Y_t
 
     Y11_real = mult * real(Y11)
-    Y11_imag = mult * imag(Y12)
+    Y11_imag = mult * imag(Y12) - b
     Y22_real = mult * real(Y22)
     Y22_imag = mult * imag(Y22)
     Y12_real = -mult * real(Y12)
@@ -298,7 +345,7 @@ This allows the user to perform branch modifications, three phase faults (with i
 # Arguments:
 
 - `time::Float64` : Defines when the Network Switch will happen. This time should be inside the time span considered in the Simulation
-- `ybus::SparseArrays.SparseMatrixCSC{Complex{Float64}, Int}` : Complex admittance matrix 
+- `ybus::SparseArrays.SparseMatrixCSC{Complex{Float64}, Int}` : Complex admittance matrix
 """
 mutable struct NetworkSwitch <: Perturbation
     time::Float64
@@ -308,23 +355,15 @@ mutable struct NetworkSwitch <: Perturbation
         ybus::SparseArrays.SparseMatrixCSC{Complex{Float64}, Int},
     )
         n_bus = size(ybus)[1]
-        if n_bus < 15_000
-            I = PSY._goderya(ybus)
-            if length(Set(I)) != n_bus
-                error("The Ybus provided has islands and can't be used in the simulation")
-            end
-        else
-            @warn(
-                "The number of buses in the Ybus provided is $n_bus and is too large to be verified for connectivity"
-            )
-        end
+        sub_nets = PNM.find_subnetworks(ybus, collect(1:n_bus))
+        length(sub_nets) > 1 && throw(IS.DataFormatError("Network not connected"))
         # TODO: Improve performance here
         ybus_rect = transform_ybus_to_rectangular(ybus)
         new(time, ybus_rect)
     end
 end
 
-function NetworkSwitch(time::Float64, ybus::PSY.Ybus)
+function NetworkSwitch(time::Float64, ybus::PNM.Ybus)
     return NetworkSwitch(time, ybus.data)
 end
 
@@ -445,7 +484,7 @@ end
     mutable struct SourceBusVoltageChange <: Perturbation
         time::Float64
         device::PSY.Source
-        signal_index::Int
+        signal::Symbol
         ref_value::Float64
     end
 
@@ -455,15 +494,15 @@ A `SourceBusVoltageChange` allows to change the reference setpoint provided by a
 
 - `time::Float64` : Defines when the Control Reference Change will happen. This time should be inside the time span considered in the Simulation
 - `device::Type{<:PowerSystems.Source}` : Device modified
-- `signal::Int` : determines which reference setpoint will be modified. The accepted signals are:
-    - `1`: Modifies the internal voltage magnitude reference setpoint.
-    - `2`: Modifies the internal voltage angle reference setpoint.
+- `signal::Symbol` : determines which reference setpoint will be modified. The accepted signals are:
+    - :V_ref Modifies the internal voltage magnitude reference setpoint.
+    - :θ_ref  Modifies the internal voltage angle reference setpoint.
 - `ref_value::Float64` : User defined value for setpoint reference.
 """
 mutable struct SourceBusVoltageChange <: Perturbation
     time::Float64
     device::PSY.Source
-    signal_index::Int
+    signal::Symbol
     ref_value::Float64
 end
 
@@ -471,7 +510,13 @@ function get_affect(inputs::SimulationInputs, ::PSY.System, pert::SourceBusVolta
     wrapped_device_ix = _find_device_index(inputs, pert.device)
     return (integrator) -> begin
         wrapped_device = get_static_injectors(integrator.p)[wrapped_device_ix]
-        set_V_ref(wrapped_device, pert.ref_value)
+        if pert.signal == :V_ref
+            set_V_ref(wrapped_device, pert.ref_value)
+        elseif pert.signal == :θ_ref
+            set_θ_ref(wrapped_device, pert.ref_value)
+        else
+            error("Signal $signal not accepted as a control reference change in SourceBus")
+        end
         return
     end
 end
@@ -482,7 +527,7 @@ end
         device::PowerSystems.DynamicInjection
     end
 
-A `GeneratorTrip` allows to disconnect a Dynamic Generation unit from the system at a specified time. 
+A `GeneratorTrip` allows to disconnect a Dynamic Generation unit from the system at a specified time.
 
 # Arguments:
 
@@ -540,7 +585,13 @@ mutable struct LoadChange <: Perturbation
         signal::Symbol,
         ref_value::Float64,
     )
-        if signal ∉ [:P_ref, :Q_ref]
+        # Currently I'm assumming P_ref and Q_ref are constant impedance to
+        if signal ∈ [:P_ref, :Q_ref]
+            @warn(
+                "P_ref and Q_ref signals will be deprecated. It will be assumed as a change in constant impedance for StandardLoads and a change in constant power for PowerLoads. Allowed signals are $(ACCEPTED_LOADCHANGE_REFS)"
+            )
+        end
+        if signal ∉ ACCEPTED_LOADCHANGE_REFS
             error("Signal $signal not accepted as a control reference change in Loads")
         end
         new(time, device, signal, ref_value)
@@ -558,14 +609,100 @@ function _find_device_index(inputs::SimulationInputs, device::PSY.ElectricLoad)
     return wrapped_device_ixs[1]
 end
 
-function get_affect(inputs::SimulationInputs, ::PSY.System, pert::LoadChange)
-    wrapped_device_ix = _find_device_index(inputs, pert.device)
-    return (integrator) -> begin
-        wrapped_device = get_static_loads(integrator.p)[wrapped_device_ix]
-        @debug "Changing $(PSY.get_name(wrapped_device)) $(pert.signal) to $(pert.ref_value)"
-        getfield(wrapped_device, pert.signal)[] = pert.ref_value
+function get_affect(inputs::SimulationInputs, sys::PSY.System, pert::LoadChange)
+    sys_base_power = PSY.get_base_power(sys)
+    wrapped_device_ix = _find_zip_load_ix(inputs, pert.device)
+    ld = pert.device
+    if !PSY.get_available(ld)
+        @error("Load $(PSY.get_name(ld)) is unavailable. Perturbation ignored")
         return
     end
+    ref_value = pert.ref_value
+    signal = pert.signal
+    if isa(ld, PSY.PowerLoad)
+        return (integrator) -> begin
+            base_power_conversion = PSY.get_base_power(ld) / sys_base_power
+            P_old = PSY.get_active_power(ld)
+            Q_old = PSY.get_reactive_power(ld)
+            P_change = 0.0
+            Q_change = 0.0
+            if signal ∈ [:P_ref, :P_ref_power]
+                P_change = (ref_value - P_old) * base_power_conversion
+            elseif signal ∈ [:Q_ref, :Q_ref_power]
+                Q_change = ref_value - Q_old * base_power_conversion
+            else
+                error(
+                    "Signal is not accepted for Constant PowerLoad. Please specify the correct signal type.",
+                )
+            end
+            wrapped_zip = get_static_loads(integrator.p)[wrapped_device_ix]
+            P_power = get_P_power(wrapped_zip)
+            Q_power = get_Q_power(wrapped_zip)
+            set_P_power!(wrapped_zip, P_power + P_change)
+            set_Q_power!(wrapped_zip, Q_power + Q_change)
+            @debug "Changing load at bus $(PSY.get_name(wrapped_zip)) $(pert.signal) to $(pert.ref_value)"
+            return
+        end
+    elseif isa(ld, PSY.StandardLoad)
+        return (integrator) -> begin
+            base_power_conversion = PSY.get_base_power(ld) / sys_base_power
+            wrapped_zip = get_static_loads(integrator.p)[wrapped_device_ix]
+            # List all cases for StandardLoad changes
+            if signal ∈ [:P_ref, :P_ref_impedance]
+                P_old = PSY.get_impedance_active_power(ld)
+                P_change = (ref_value - P_old) * base_power_conversion
+                P_impedance = get_P_impedance(wrapped_zip)
+                set_P_impedance!(wrapped_zip, P_impedance + P_change)
+            elseif signal ∈ [:Q_ref, :Q_ref_impedance]
+                Q_old = PSY.get_impedance_reactive_power(ld)
+                Q_change = (ref_value - Q_old) * base_power_conversion
+                Q_impedance = get_Q_impedance(wrapped_zip)
+                set_Q_impedance!(wrapped_zip, Q_impedance + Q_change)
+            elseif signal == :P_ref_power
+                P_old = PSY.get_constant_active_power(ld)
+                P_change = (ref_value - P_old) * base_power_conversion
+                P_power = get_P_power(wrapped_zip)
+                set_P_power!(wrapped_zip, P_power + P_change)
+            elseif signal == :Q_ref_power
+                Q_old = PSY.get_constant_reactive_power(ld)
+                Q_change = (ref_value - Q_old) * base_power_conversion
+                Q_power = get_Q_power(wrapped_zip)
+                set_Q_power!(wrapped_zip, Q_power + Q_change)
+            elseif signal == :P_ref_current
+                P_old = PSY.get_current_active_power(ld)
+                P_change = (ref_value - P_old) * base_power_conversion
+                P_current = get_P_current(wrapped_zip)
+                set_P_current!(wrapped_zip, P_current + P_change)
+            elseif signal == :Q_ref_current
+                Q_old = PSY.get_current_reactive_power(ld)
+                Q_change = (ref_value - Q_old) * base_power_conversion
+                Q_current = get_Q_current(wrapped_zip)
+                set_Q_current!(wrapped_zip, Q_current + Q_change)
+            else
+                error("It should never be here. Should have failed in the constructor.")
+            end
+        end
+    elseif isa(ld, PSY.ExponentialLoad)
+        return (integrator) -> begin
+            ld_name = PSY.get_name(ld)
+            wrapped_zip = get_static_loads(integrator.p)[wrapped_device_ix]
+            exp_names = get_exp_names(wrapped_zip)
+            exp_vects = get_exp_params(wrapped_zip)
+            tuple_ix = exp_names[ld_name]
+            exp_params = exp_vects[tuple_ix]
+            P_exp_old = exp_params.P_exp
+            Q_exp_old = exp_params.Q_exp
+            exp_params.P_exp = P_exp_old + P_change
+            exp_params.Q_exp = Q_exp_old + Q_change
+            @debug "Removing exponential load entry $(ld_name) at wrapper $(PSY.get_name(wrapped_zip))"
+            return
+        end
+    else
+        error(
+            "The load type of load $(PSY.get_name(ld)) is not supported for a LoadChange perturbation",
+        )
+    end
+    return
 end
 
 """
@@ -574,7 +711,7 @@ end
         device::PowerSystems.ElectricLoad
     end
 
-A `LoadTrip` allows the user to disconnect a load from the system. 
+A `LoadTrip` allows the user to disconnect a load from the system.
 
 # Arguments:
 
@@ -586,12 +723,114 @@ mutable struct LoadTrip <: Perturbation
     device::PSY.ElectricLoad
 end
 
-function get_affect(inputs::SimulationInputs, ::PSY.System, pert::LoadTrip)
-    wrapped_device_ix = _find_device_index(inputs, pert.device)
+function get_affect(inputs::SimulationInputs, sys::PSY.System, pert::LoadTrip)
+    sys_base_power = PSY.get_base_power(sys)
+    wrapped_device_ix = _find_zip_load_ix(inputs, pert.device)
+    ld = pert.device
+    if !PSY.get_available(ld)
+        @error("Load $(PSY.get_name(ld)) is unavailable. Perturbation ignored")
+        return
+    end
+    if isa(ld, PSY.PowerLoad)
+        base_power_conversion = PSY.get_base_power(ld) / sys_base_power
+        P_trip = PSY.get_active_power(ld) * base_power_conversion
+        Q_trip = PSY.get_reactive_power(ld) * base_power_conversion
+        return (integrator) -> begin
+            PSY.set_available!(ld, false)
+            wrapped_zip = get_static_loads(integrator.p)[wrapped_device_ix]
+            P_power = get_P_power(wrapped_zip)
+            Q_power = get_Q_power(wrapped_zip)
+            set_P_power!(wrapped_zip, P_power - P_trip)
+            set_Q_power!(wrapped_zip, Q_power - Q_trip)
+            @debug "Removing load power values from ZIP load at $(PSY.get_name(wrapped_zip))"
+            return
+        end
+    elseif isa(ld, PSY.StandardLoad)
+        base_power_conversion = PSY.get_base_power(ld) / sys_base_power
+        P_power_trip = PSY.get_constant_active_power(ld) * base_power_conversion
+        Q_power_trip = PSY.get_constant_reactive_power(ld) * base_power_conversion
+        P_current_trip = PSY.get_current_active_power(ld) * base_power_conversion
+        Q_current_trip = PSY.get_current_reactive_power(ld) * base_power_conversion
+        P_impedance_trip = PSY.get_impedance_active_power(ld) * base_power_conversion
+        Q_impedance_trip = PSY.get_impedance_reactive_power(ld) * base_power_conversion
+        return (integrator) -> begin
+            PSY.set_available!(ld, false)
+            wrapped_zip = get_static_loads(integrator.p)[wrapped_device_ix]
+            # Update Constant Power
+            P_power = get_P_power(wrapped_zip)
+            Q_power = get_Q_power(wrapped_zip)
+            set_P_power!(wrapped_zip, P_power - P_power_trip)
+            set_Q_power!(wrapped_zip, Q_power - Q_power_trip)
+            # Update Constant Current
+            P_current = get_P_current(wrapped_zip)
+            Q_current = get_Q_current(wrapped_zip)
+            set_P_current!(wrapped_zip, P_current - P_current_trip)
+            set_Q_current!(wrapped_zip, Q_current - Q_current_trip)
+            # Update Constant Impedance
+            P_impedance = get_P_impedance(wrapped_zip)
+            Q_impedance = get_Q_impedance(wrapped_zip)
+            set_P_impedance!(wrapped_zip, P_impedance - P_impedance_trip)
+            set_Q_impedance!(wrapped_zip, Q_impedance - Q_impedance_trip)
+            @debug "Removing load power values from ZIP load at $(PSY.get_name(wrapped_zip))"
+            return
+        end
+    elseif isa(ld, PSY.ExponentialLoad)
+        return (integrator) -> begin
+            PSY.set_available!(ld, false)
+            ld_name = PSY.get_name(ld)
+            wrapped_zip = get_static_loads(integrator.p)[wrapped_device_ix]
+            exp_names = get_exp_names(wrapped_zip)
+            exp_params = get_exp_params(wrapped_zip)
+            tuple_ix = exp_names[ld_name]
+            deleteat!(exp_params, tuple_ix)
+            delete!(exp_names, ld_name)
+            @debug "Removing exponential load entry $(ld_name) at wrapper $(PSY.get_name(wrapped_zip))"
+            return
+        end
+    end
+    return
+end
+
+function _find_zip_load_ix(
+    inputs::SimulationInputs,
+    device::U,
+) where {U <: Union{PSY.PowerLoad, PSY.StandardLoad}}
+    wrapped_devices = get_static_loads(inputs)
+    bus_affected = PSY.get_bus(device)
+    wrapped_device_ixs =
+        findall(x -> PSY.get_name(x) == PSY.get_name(bus_affected), wrapped_devices)
+    if isempty(wrapped_device_ixs)
+        error(
+            "Device $(typeof(device))-$(PSY.get_name(device)) not found in the simulation inputs",
+        )
+    else
+        IS.@assert_op length(wrapped_device_ixs) == 1
+    end
+    return wrapped_device_ixs[1]
+end
+
+"""
+    function PerturbState(
+        time::Float64,
+        index::Int,
+        value::Float64,
+    )
+Allows the user to modify the state `index` by adding `value`. The user should modify dynamic states only, since algebraic state may require to do a reinitialization.
+# Arguments:
+- `time::Float64` : Defines when the modification of the state will happen. This time should be inside the time span considered in the Simulation.
+- `index::Int` : Defines which state index you want to modify
+- `value::Float64` : Defines how much the state will increase in value
+"""
+mutable struct PerturbState <: Perturbation
+    time::Float64
+    index::Int
+    value::Float64
+end
+
+function get_affect(::SimulationInputs, ::PSY.System, pert::PerturbState)
     return (integrator) -> begin
-        wrapped_device = get_static_loads(integrator.p)[wrapped_device_ix]
-        @info "Changing connection status $(PSY.get_name(wrapped_device))"
-        set_connection_status(wrapped_device, 0)
+        @debug "Modifying state"
+        integrator.u[pert.index] += pert.value
         return
     end
 end

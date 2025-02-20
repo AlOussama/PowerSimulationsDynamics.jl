@@ -25,8 +25,7 @@ Ybus_change = NetworkSwitch(
 ) #New YBus
 
 @testset "Test 14 Inverter Ref ResidualModel" begin
-    path = (joinpath(pwd(), "test-14"))
-    !isdir(path) && mkdir(path)
+    path = mktempdir()
     try
         # Define Simulation Problem
         sim = Simulation(
@@ -38,13 +37,13 @@ Ybus_change = NetworkSwitch(
         )
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in test14_x0_init
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
 
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
@@ -57,21 +56,22 @@ Ybus_change = NetworkSwitch(
         #Run simulation
         @test execute!(
             sim, #simulation structure
-            IDA(),#Sundials DAE Solver
+            IDA();#Sundials DAE Solver
             dtmax = 0.001, #keywords arguments
         ) == PSID.SIMULATION_FINALIZED
         results = read_results(sim)
 
         series = get_state_series(results, ("generator-101-1", :ω_oc))
+        series2 = get_mechanical_torque_series(results, "generator-101-1")
+        series3 = get_mechanical_torque_series(results, "generator-102-1")
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end
 
 @testset "Test 14 Inverter Ref MassMatrixModel" begin
-    path = (joinpath(pwd(), "test-14"))
-    !isdir(path) && mkdir(path)
+    path = mktempdir()
     try
         # Define Simulation Problem
         sim = Simulation(
@@ -83,13 +83,13 @@ end
         )
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in test14_x0_init
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
 
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
@@ -102,14 +102,16 @@ end
         #Run simulation
         @test execute!(
             sim, #simulation structure
-            Rodas4(),#Sundials DAE Solver
+            Rodas4();#Sundials DAE Solver
             dtmax = 0.001, #keywords arguments
         ) == PSID.SIMULATION_FINALIZED
         results = read_results(sim)
 
         series = get_state_series(results, ("generator-101-1", :ω_oc))
+        series2 = get_mechanical_torque_series(results, "generator-101-1")
+        series3 = get_mechanical_torque_series(results, "generator-102-1")
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end

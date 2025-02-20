@@ -17,6 +17,8 @@ function mdl_machine_ode!(
     current_r::AbstractArray{<:ACCEPTED_REAL_TYPES},
     current_i::AbstractArray{<:ACCEPTED_REAL_TYPES},
     dynamic_device::DynamicWrapper{PSY.DynamicGenerator{PSY.BaseMachine, S, A, TG, P}},
+    h,
+    t,
 ) where {S <: PSY.Shaft, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
     Sbase = get_system_base_power(dynamic_device)
     #Obtain external states inputs for component
@@ -66,6 +68,8 @@ function mdl_machine_ode!(
     current_r::AbstractArray{<:ACCEPTED_REAL_TYPES},
     current_i::AbstractArray{<:ACCEPTED_REAL_TYPES},
     dynamic_device::DynamicWrapper{PSY.DynamicGenerator{PSY.OneDOneQMachine, S, A, TG, P}},
+    h,
+    t,
 ) where {S <: PSY.Shaft, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
     Sbase = get_system_base_power(dynamic_device)
 
@@ -123,6 +127,98 @@ function mdl_machine_ode!(
 end
 
 """
+Model of 6-state (SauerPaiMachine) synchronous machine in Julia.
+Refer to Power System Modelling and Scripting by F. Milano for the equations
+"""
+function mdl_machine_ode!(
+    device_states::AbstractArray{<:ACCEPTED_REAL_TYPES},
+    output_ode::AbstractArray{<:ACCEPTED_REAL_TYPES},
+    inner_vars::AbstractArray{<:ACCEPTED_REAL_TYPES},
+    current_r::AbstractArray{<:ACCEPTED_REAL_TYPES},
+    current_i::AbstractArray{<:ACCEPTED_REAL_TYPES},
+    dynamic_device::DynamicWrapper{PSY.DynamicGenerator{PSY.SauerPaiMachine, S, A, TG, P}},
+    h,
+    t,
+) where {S <: PSY.Shaft, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
+    Sbase = get_system_base_power(dynamic_device)
+    f0 = get_system_base_frequency(dynamic_device)
+
+    #Obtain indices for component w/r to device
+    local_ix = get_local_state_ix(dynamic_device, PSY.SauerPaiMachine)
+
+    #Define internal states for component
+    internal_states = @view device_states[local_ix]
+    ψq = internal_states[1]
+    ψd = internal_states[2]
+    eq_p = internal_states[3]
+    ed_p = internal_states[4]
+    ψd_pp = internal_states[5]
+    ψq_pp = internal_states[6]
+
+    #Obtain external states inputs for component
+    external_ix = get_input_port_ix(dynamic_device, PSY.SauerPaiMachine)
+    δ = device_states[external_ix[1]]
+    ω = device_states[external_ix[2]]
+
+    #Obtain inner variables for component
+    V_tR = inner_vars[VR_gen_var]
+    V_tI = inner_vars[VI_gen_var]
+    Vf = inner_vars[Vf_var]
+
+    #Get parameters
+    machine = PSY.get_machine(dynamic_device)
+    R = PSY.get_R(machine)
+    Xd = PSY.get_Xd(machine)
+    Xq = PSY.get_Xq(machine)
+    Xd_p = PSY.get_Xd_p(machine)
+    Xq_p = PSY.get_Xq_p(machine)
+    Xd_pp = PSY.get_Xd_pp(machine)
+    Xq_pp = PSY.get_Xq_pp(machine)
+    Xl = PSY.get_Xl(machine)
+    Td0_p = PSY.get_Td0_p(machine)
+    Tq0_p = PSY.get_Tq0_p(machine)
+    Td0_pp = PSY.get_Td0_pp(machine)
+    Tq0_pp = PSY.get_Tq0_pp(machine)
+    γ_d1 = PSY.get_γ_d1(machine)
+    γ_q1 = PSY.get_γ_q1(machine)
+    γ_d2 = PSY.get_γ_d2(machine)
+    γ_q2 = PSY.get_γ_q2(machine)
+    basepower = PSY.get_base_power(dynamic_device)
+    ``
+    #RI to dq transformation
+    V_dq = ri_dq(δ) * [V_tR; V_tI]
+
+    #Obtain electric variables
+    i_d = (1.0 / Xd_pp) * (γ_d1 * eq_p - ψd + (1 - γ_d1) * ψd_pp)      #15.15
+    i_q = (1.0 / Xq_pp) * (-γ_q1 * ed_p - ψq + (1 - γ_q1) * ψq_pp)     #15.15
+    τ_e = ψd * i_q - ψq * i_d               #15.6
+
+    #Compute ODEs
+    output_ode[local_ix[1]] = 2 * π * f0 * (R * i_q - ω * ψd + V_dq[2])                        #15.9 ψq
+    output_ode[local_ix[2]] = 2 * π * f0 * (R * i_d + ω * ψq + V_dq[1])                        #15.9 ψd
+    output_ode[local_ix[3]] =
+        (1.0 / Td0_p) *
+        (-eq_p - (Xd - Xd_p) * (i_d - γ_d2 * ψd_pp - (1 - γ_d1) * i_d + γ_d2 * eq_p) + Vf)     #15.13 eq_p
+    output_ode[local_ix[4]] =
+        (1.0 / Tq0_p) *
+        (-ed_p + (Xq - Xq_p) * (i_q - γ_q2 * ψq_pp - (1 - γ_q1) * i_q - γ_d2 * ed_p))          #15.13 ed_p
+    output_ode[local_ix[5]] = (1.0 / Td0_pp) * (-ψd_pp + eq_p - (Xd_p - Xl) * i_d)        #15.13 ψd_pp
+    output_ode[local_ix[6]] = (1.0 / Tq0_pp) * (-ψq_pp - ed_p - (Xq_p - Xl) * i_q)        #15.13 ψq_pp
+
+    #Update inner_vars
+    inner_vars[τe_var] = τ_e
+
+    #Compute current from the generator to the grid
+    I_RI = (basepower / Sbase) * dq_ri(δ) * [i_d; i_q]
+
+    #Update current
+    current_r[1] += I_RI[1]
+    current_i[1] += I_RI[2]
+
+    return
+end
+
+"""
 Model of 6-state (MarconatoMachine) synchronous machine in Julia.
 Refer to Power System Modelling and Scripting by F. Milano for the equations
 """
@@ -133,6 +229,8 @@ function mdl_machine_ode!(
     current_r::AbstractArray{<:ACCEPTED_REAL_TYPES},
     current_i::AbstractArray{<:ACCEPTED_REAL_TYPES},
     dynamic_device::DynamicWrapper{PSY.DynamicGenerator{PSY.MarconatoMachine, S, A, TG, P}},
+    h,
+    t,
 ) where {S <: PSY.Shaft, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
     Sbase = get_system_base_power(dynamic_device)
     f0 = get_system_base_frequency(dynamic_device)
@@ -221,6 +319,8 @@ function mdl_machine_ode!(
     dynamic_device::DynamicWrapper{
         PSY.DynamicGenerator{PSY.SimpleMarconatoMachine, S, A, TG, P},
     },
+    h,
+    t,
 ) where {S <: PSY.Shaft, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
     Sbase = get_system_base_power(dynamic_device)
     f0 = get_system_base_frequency(dynamic_device)
@@ -306,6 +406,8 @@ function mdl_machine_ode!(
     dynamic_device::DynamicWrapper{
         PSY.DynamicGenerator{PSY.AndersonFouadMachine, S, A, TG, P},
     },
+    h,
+    t,
 ) where {S <: PSY.Shaft, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
     Sbase = get_system_base_power(dynamic_device)
     f0 = get_system_base_frequency(dynamic_device)
@@ -387,6 +489,8 @@ function mdl_machine_ode!(
     current_r::AbstractArray{<:ACCEPTED_REAL_TYPES},
     current_i::AbstractArray{<:ACCEPTED_REAL_TYPES},
     dynamic_device::DynamicWrapper{PSY.DynamicGenerator{PSY.SimpleAFMachine, S, A, TG, P}},
+    h,
+    t,
 ) where {S <: PSY.Shaft, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
     Sbase = get_system_base_power(dynamic_device)
     f0 = get_system_base_frequency(dynamic_device)
@@ -462,6 +566,8 @@ function mdl_machine_ode!(
     current_r::AbstractArray{<:ACCEPTED_REAL_TYPES},
     current_i::AbstractArray{<:ACCEPTED_REAL_TYPES},
     dynamic_device::DynamicWrapper{PSY.DynamicGenerator{M, S, A, TG, P}},
+    h,
+    t,
 ) where {
     M <: Union{PSY.RoundRotorQuadratic, PSY.RoundRotorExponential},
     S <: PSY.Shaft,
@@ -560,6 +666,8 @@ function mdl_machine_ode!(
     dynamic_device::DynamicWrapper{
         PSY.DynamicGenerator{PSY.SalientPoleQuadratic, S, A, TG, P},
     },
+    h,
+    t,
 ) where {S <: PSY.Shaft, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
     Sbase = get_system_base_power(dynamic_device)
     f0 = get_system_base_frequency(dynamic_device)
@@ -641,6 +749,8 @@ function mdl_machine_ode!(
     dynamic_device::DynamicWrapper{
         PSY.DynamicGenerator{PSY.SalientPoleExponential, S, A, TG, P},
     },
+    h,
+    t,
 ) where {S <: PSY.Shaft, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
     Sbase = get_system_base_power(dynamic_device)
     f0 = get_system_base_frequency(dynamic_device)
@@ -731,6 +841,8 @@ inner_vars,
 current_r::AbstractArray{<:ACCEPTED_REAL_TYPES},
     current_i::AbstractArray{<:ACCEPTED_REAL_TYPES},
     dynamic_device::DynamicWrapper{PSY.DynamicGenerator{PSY.FullMachine, S, A, TG, P}},
+    h,
+    t,
 ) where {S <: PSY.Shaft, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
 
     #Obtain indices for component w/r to device
@@ -813,6 +925,8 @@ inner_vars,
 current_r::AbstractArray{<:ACCEPTED_REAL_TYPES},
     current_i::AbstractArray{<:ACCEPTED_REAL_TYPES},
     dynamic_device::DynamicWrapper{PSY.DynamicGenerator{PSY.SimpleFullMachine, S, A, TG, P}},
+    h,
+    t,
 ) where {S <: PSY.Shaft, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
 
     #Obtain indices for component w/r to device

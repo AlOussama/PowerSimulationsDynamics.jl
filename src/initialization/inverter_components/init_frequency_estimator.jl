@@ -1,7 +1,7 @@
 function initialize_frequency_estimator!(
     device_states,
     static::PSY.StaticInjection,
-    dynamic_device::DynamicWrapper{PSY.DynamicInverter{C, O, IC, DC, PSY.KauraPLL, F}},
+    dynamic_device::DynamicWrapper{PSY.DynamicInverter{C, O, IC, DC, PSY.KauraPLL, F, L}},
     inner_vars::AbstractVector,
 ) where {
     C <: PSY.Converter,
@@ -9,6 +9,7 @@ function initialize_frequency_estimator!(
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
     Vr_filter = inner_vars[Vr_filter_var]
     Vi_filter = inner_vars[Vi_filter_var]
@@ -19,7 +20,7 @@ function initialize_frequency_estimator!(
     ki_pll = PSY.get_ki_pll(pll_control)
 
     #Get initial guess
-    θ0_pll = atan(Vi_filter / Vr_filter)
+    θ0_pll = atan(Vi_filter, Vr_filter)
     Vpll_d0 = Vr_filter
     Vpll_q0 = 0.0
     ϵ_pll0 = 0.0
@@ -32,14 +33,15 @@ function initialize_frequency_estimator!(
 
         V_dq_pll = ri_dq(θ_pll + pi / 2) * [Vr_filter; Vi_filter]
 
+        angle = atan(vpll_q, vpll_d)
         out[1] = (V_dq_pll[d] - vpll_d)
         out[2] = (V_dq_pll[q] - vpll_q)
-        out[3] = atan(vpll_q / vpll_d)
-        out[4] = (kp_pll * atan(vpll_q / vpll_d) + ki_pll * ϵ_pll)
+        out[3] = angle
+        out[4] = (kp_pll * angle + ki_pll * ϵ_pll)
     end
 
     x0 = [Vpll_d0, Vpll_q0, ϵ_pll0, θ0_pll]
-    sol = NLsolve.nlsolve(f!, x0)
+    sol = NLsolve.nlsolve(f!, x0; ftol = STRICT_NLSOLVE_F_TOLERANCE)
     if !NLsolve.converged(sol)
         @warn("Initialization in PLL failed")
     else
@@ -65,7 +67,7 @@ function initialize_frequency_estimator!(
     device_states,
     static::PSY.StaticInjection,
     dynamic_device::DynamicWrapper{
-        PSY.DynamicInverter{C, O, IC, DC, PSY.ReducedOrderPLL, F},
+        PSY.DynamicInverter{C, O, IC, DC, PSY.ReducedOrderPLL, F, L},
     },
     inner_vars::AbstractVector,
 ) where {
@@ -74,6 +76,7 @@ function initialize_frequency_estimator!(
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
     Vr_filter = inner_vars[Vr_filter_var]
     Vi_filter = inner_vars[Vi_filter_var]
@@ -84,7 +87,7 @@ function initialize_frequency_estimator!(
     ki_pll = PSY.get_ki_pll(pll_control)
 
     #Get initial guess
-    θ0_pll = atan(Vi_filter / Vr_filter)
+    θ0_pll = atan(Vi_filter, Vr_filter)
     Vpll_q0 = 0.0
     ϵ_pll0 = 0.0
 
@@ -101,7 +104,7 @@ function initialize_frequency_estimator!(
     end
 
     x0 = [Vpll_q0, ϵ_pll0, θ0_pll]
-    sol = NLsolve.nlsolve(f!, x0)
+    sol = NLsolve.nlsolve(f!, x0; ftol = STRICT_NLSOLVE_F_TOLERANCE)
     if !NLsolve.converged(sol)
         @warn("Initialization in PLL failed")
     else
@@ -120,13 +123,14 @@ function initialize_frequency_estimator!(
         inner_vars[ω_freq_estimator_var] = get_ω_ref(dynamic_device)
         inner_vars[θ_freq_estimator_var] = sol_x0[3]
     end
+    return
 end
 
 function initialize_frequency_estimator!(
     device_states,
     static::PSY.StaticInjection,
     dynamic_device::DynamicWrapper{
-        PSY.DynamicInverter{C, O, IC, DC, PSY.FixedFrequency, F},
+        PSY.DynamicInverter{C, O, IC, DC, PSY.FixedFrequency, F, L},
     },
     inner_vars::AbstractVector,
 ) where {
@@ -135,6 +139,7 @@ function initialize_frequency_estimator!(
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
     #Get parameters
     pll_control = PSY.get_freq_estimator(dynamic_device)
@@ -142,4 +147,5 @@ function initialize_frequency_estimator!(
 
     #Update guess of frequency estimator
     inner_vars[ω_freq_estimator_var] = frequency
+    return
 end

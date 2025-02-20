@@ -11,13 +11,16 @@ function mdl_freq_estimator_ode!(
     output_ode::AbstractArray{<:ACCEPTED_REAL_TYPES},
     inner_vars::AbstractArray{<:ACCEPTED_REAL_TYPES},
     ω_sys::ACCEPTED_REAL_TYPES,
-    dynamic_device::DynamicWrapper{PSY.DynamicInverter{C, O, IC, DC, PSY.KauraPLL, F}},
+    dynamic_device::DynamicWrapper{PSY.DynamicInverter{C, O, IC, DC, PSY.KauraPLL, F, L}},
+    h,
+    t,
 ) where {
     C <: PSY.Converter,
     O <: PSY.OuterControl,
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Obtain external states inputs for component
@@ -49,21 +52,24 @@ function mdl_freq_estimator_ode!(
     #Compute 6 states ODEs (D'Arco EPSR122 Model)
     #Output Voltage LPF (internal state)
     #𝜕vpll_d/𝜕t, D'Arco ESPR122 eqn. 12
-    output_ode[local_ix[1]] = ω_lp * (V_dq_pll[d] - vpll_d)
+    output_ode[local_ix[1]] = low_pass(V_dq_pll[d], vpll_d, 1.0, 1.0 / ω_lp)[2]
     #𝜕vpll_q/𝜕t, D'Arco ESPR122 eqn. 12
-    output_ode[local_ix[2]] = ω_lp * (V_dq_pll[q] - vpll_q)
+    output_ode[local_ix[2]] = low_pass(V_dq_pll[q], vpll_q, 1.0, 1.0 / ω_lp)[2]
     #PI Integrator (internal state)
+    pi_output, dϵ_dt = pi_block(atan(vpll_q, vpll_d), ϵ_pll, kp_pll, ki_pll)
     #𝜕dϵ_pll/𝜕t, D'Arco ESPR122 eqn. 13
-    output_ode[local_ix[3]] = atan(vpll_q / vpll_d)
-    #PLL Frequency Deviation (internal state)
+    output_ode[local_ix[3]] = dϵ_dt
+    #PLL Frequency Deviation (internal state), Note: D'Arco ESPR122 eqn. 14 is missing (1.0-ω_sys) term. 
+    #See Hug ISGT-EUROPE2018 Eqns. 26-28 for proper treatment of PLL reference frame. 
+    Δω = 1.0 - ω_sys + pi_output
     #𝜕θ_pll/𝜕t, D'Arco ESPR122 eqn. 15
-    output_ode[local_ix[4]] = (ωb * kp_pll * atan(vpll_q / vpll_d) + ωb * ki_pll * ϵ_pll)
+    output_ode[local_ix[4]] = ωb * Δω
 
     #Update inner_vars
     #PLL frequency, D'Arco EPSR122 eqn. 16
-    inner_vars[ω_freq_estimator_var] =
-        (kp_pll * atan(vpll_q / vpll_d) + ki_pll * ϵ_pll + 1.0)
+    inner_vars[ω_freq_estimator_var] = Δω + ω_sys
     inner_vars[θ_freq_estimator_var] = θ_pll
+    return
 end
 
 function mdl_freq_estimator_ode!(
@@ -72,14 +78,17 @@ function mdl_freq_estimator_ode!(
     inner_vars::AbstractArray{<:ACCEPTED_REAL_TYPES},
     ω_sys::ACCEPTED_REAL_TYPES,
     dynamic_device::DynamicWrapper{
-        PSY.DynamicInverter{C, O, IC, DC, PSY.ReducedOrderPLL, F},
+        PSY.DynamicInverter{C, O, IC, DC, PSY.ReducedOrderPLL, F, L},
     },
+    h,
+    t,
 ) where {
     C <: PSY.Converter,
     O <: PSY.OuterControl,
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Obtain external states inputs for component
@@ -108,19 +117,22 @@ function mdl_freq_estimator_ode!(
     V_dq_pll = ri_dq(θ_pll + pi / 2) * [Vr_filter; Vi_filter]
 
     #Output Voltage LPF (internal state)
-    #𝜕vpll_q/𝜕t, Low Pass Filter, Johnson COMPEL2017 eqn. 3.1
-    output_ode[local_ix[1]] = ω_lp * (V_dq_pll[q] - vpll_q)
+    #𝜕vpll_q/𝜕t, Low Pass Filter, Hug ISGT-EUROPE2018 eqn. 26
+    output_ode[local_ix[1]] = low_pass(V_dq_pll[q], vpll_q, 1.0, 1.0 / ω_lp)[2]
     #PI Integrator (internal state)
-    #𝜕dϵ_pll/𝜕t, Johnson COMPEL2017 eqn. 3.2
-    output_ode[local_ix[2]] = vpll_q
-    #PLL Frequency Deviation (internal state)
-    #𝜕θ_pll/𝜕t, DJohnson COMPEL2017 eqn. 3.3
-    output_ode[local_ix[3]] = ωb * (kp_pll * vpll_q + ki_pll * ϵ_pll)
+    pi_output, dϵ_dt = pi_block(vpll_q, ϵ_pll, kp_pll, ki_pll)
+    #𝜕dϵ_pll/𝜕t, Hug ISGT-EUROPE2018 eqn. 10
+    output_ode[local_ix[2]] = dϵ_dt
+    #PLL Frequency Deviation (internal state), Hug ISGT-EUROPE2018 eqn. 26 
+    Δω = 1.0 - ω_sys + pi_output
+    #𝜕θ_pll/𝜕t, Hug ISGT-EUROPE2018 eqns. 9, 26, 27 
+    output_ode[local_ix[3]] = ωb * Δω
 
     #Update inner_vars
     #PLL frequency, D'Arco EPSR122 eqn. 16
-    inner_vars[ω_freq_estimator_var] = (kp_pll * vpll_q + ki_pll * ϵ_pll + 1.0)
+    inner_vars[ω_freq_estimator_var] = Δω + ω_sys
     inner_vars[θ_freq_estimator_var] = θ_pll
+    return
 end
 
 function mdl_freq_estimator_ode!(
@@ -129,14 +141,17 @@ function mdl_freq_estimator_ode!(
     inner_vars::AbstractArray{<:ACCEPTED_REAL_TYPES},
     ω_sys::ACCEPTED_REAL_TYPES,
     dynamic_device::DynamicWrapper{
-        PSY.DynamicInverter{C, O, IC, DC, PSY.FixedFrequency, F},
+        PSY.DynamicInverter{C, O, IC, DC, PSY.FixedFrequency, F, L},
     },
+    h,
+    t,
 ) where {
     C <: PSY.Converter,
     O <: PSY.OuterControl,
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Get parameters
@@ -146,4 +161,5 @@ function mdl_freq_estimator_ode!(
     #Update inner_vars
     #PLL frequency
     inner_vars[ω_freq_estimator_var] = frequency
+    return
 end

@@ -12,6 +12,8 @@ function mdl_shaft_ode!(
     inner_vars::AbstractArray{<:ACCEPTED_REAL_TYPES},
     ω_sys::ACCEPTED_REAL_TYPES,
     dynamic_device::DynamicWrapper{PSY.DynamicGenerator{M, PSY.SingleMass, A, TG, P}},
+    h,
+    t,
 ) where {M <: PSY.Machine, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
     f0 = get_system_base_frequency(dynamic_device)
     #Obtain indices for component w/r to device
@@ -32,7 +34,7 @@ function mdl_shaft_ode!(
 
     #Compute 2 states ODEs
     output_ode[local_ix[1]] = 2 * π * f0 * (ω - ω_sys)                    #15.5
-    output_ode[local_ix[2]] = (1 / (2 * H)) * (τm - τe - D * (ω - 1.0))   #15.5
+    output_ode[local_ix[2]] = (1 / (2 * H)) * (τm - τe - D * (ω - 1.0) / ω)   #15.5
 
     return
 end
@@ -43,6 +45,8 @@ function mdl_shaft_ode!(
     inner_vars::AbstractArray{<:ACCEPTED_REAL_TYPES},
     ω_sys::ACCEPTED_REAL_TYPES,
     dynamic_device::DynamicWrapper{PSY.DynamicGenerator{M, PSY.FiveMassShaft, A, TG, P}},
+    h,
+    t,
 ) where {M <: PSY.Machine, A <: PSY.AVR, TG <: PSY.TurbineGov, P <: PSY.PSS}
     f0 = get_system_base_frequency(dynamic_device)
 

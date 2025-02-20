@@ -32,6 +32,9 @@ function test_ieeest_implicit(dyr_file, csv_file, init_cond, eigs_value)
     !isdir(path) && mkdir(path)
     try
         sys = System(raw_file_dir, dyr_file)
+        for l in get_components(PSY.StandardLoad, sys)
+            transform_load_to_constant_impedance(l)
+        end
 
         # Define Simulation Problem
         sim = Simulation!(
@@ -43,13 +46,13 @@ function test_ieeest_implicit(dyr_file, csv_file, init_cond, eigs_value)
         ) #Type of Fault
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in init_cond
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
 
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
@@ -60,7 +63,7 @@ function test_ieeest_implicit(dyr_file, csv_file, init_cond, eigs_value)
         @test LinearAlgebra.norm(eigs - eigs_value) < 1e-3
 
         # Solve problem
-        @test execute!(sim, IDA(), dtmax = 0.005, saveat = 0.005) ==
+        @test execute!(sim, IDA(); dtmax = 0.005, saveat = 0.005) ==
               PSID.SIMULATION_FINALIZED
         results = read_results(sim)
 
@@ -90,7 +93,7 @@ function test_ieeest_implicit(dyr_file, csv_file, init_cond, eigs_value)
         @test isa(rpower, Tuple{Vector{Float64}, Vector{Float64}})
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end
 
@@ -99,6 +102,9 @@ function test_ieeest_mass_matrix(dyr_file, csv_file, init_cond, eigs_value)
     !isdir(path) && mkdir(path)
     try
         sys = System(raw_file_dir, dyr_file)
+        for l in get_components(PSY.StandardLoad, sys)
+            transform_load_to_constant_impedance(l)
+        end
 
         # Define Simulation Problem
         sim = Simulation!(
@@ -110,13 +116,13 @@ function test_ieeest_mass_matrix(dyr_file, csv_file, init_cond, eigs_value)
         ) #Type of Fault
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in init_cond
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
 
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
@@ -127,7 +133,7 @@ function test_ieeest_mass_matrix(dyr_file, csv_file, init_cond, eigs_value)
         @test LinearAlgebra.norm(eigs - eigs_value) < 1e-3
 
         # Solve problem
-        @test execute!(sim, Rodas4(), dtmax = 0.005, saveat = 0.005) ==
+        @test execute!(sim, Rodas4(); dtmax = 0.005, saveat = 0.005) ==
               PSID.SIMULATION_FINALIZED
         results = read_results(sim)
 
@@ -157,7 +163,7 @@ function test_ieeest_mass_matrix(dyr_file, csv_file, init_cond, eigs_value)
         @test isa(rpower, Tuple{Vector{Float64}, Vector{Float64}})
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end
 

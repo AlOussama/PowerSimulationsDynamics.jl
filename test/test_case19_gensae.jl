@@ -36,10 +36,12 @@ raw_file_dir = joinpath(TEST_FILES_DIR, "benchmarks/psse/GENSAE/ThreeBusMulti.ra
 tspan = (0.0, 20.0)
 
 function test_gensae_implicit(dyr_file, csv_file, init_cond, eigs_value)
-    path = (joinpath(pwd(), "test-psse-gensae"))
-    !isdir(path) && mkdir(path)
+    path = mktempdir()
     try
         sys = System(raw_file_dir, dyr_file)
+        for l in get_components(PSY.StandardLoad, sys)
+            transform_load_to_constant_impedance(l)
+        end
 
         # Define Simulation Problem
         sim = Simulation!(
@@ -51,13 +53,13 @@ function test_gensae_implicit(dyr_file, csv_file, init_cond, eigs_value)
         ) #Type of Fault
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in init_cond
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
 
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
@@ -68,7 +70,7 @@ function test_gensae_implicit(dyr_file, csv_file, init_cond, eigs_value)
         @test LinearAlgebra.norm(eigs - eigs_value) < 1e-3
 
         # Solve problem
-        @test execute!(sim, IDA(), dtmax = 0.005, saveat = 0.005) ==
+        @test execute!(sim, IDA(); dtmax = 0.005, saveat = 0.005) ==
               PSID.SIMULATION_FINALIZED
         results = read_results(sim)
 
@@ -77,6 +79,8 @@ function test_gensae_implicit(dyr_file, csv_file, init_cond, eigs_value)
         t = series[1]
         δ = series[2]
         series2 = get_voltage_magnitude_series(results, 102)
+        # TODO: Test I_fd with PSSE
+        series3 = get_field_current_series(results, "generator-102-1")
 
         t_psse, δ_psse = get_csv_delta(csv_file)
 
@@ -92,15 +96,17 @@ function test_gensae_implicit(dyr_file, csv_file, init_cond, eigs_value)
         @test isa(rpower, Tuple{Vector{Float64}, Vector{Float64}})
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end
 
 function test_gensae_mass_matrix(dyr_file, csv_file, init_cond, eigs_value)
-    path = (joinpath(pwd(), "test-psse-gensae"))
-    !isdir(path) && mkdir(path)
+    path = mktempdir()
     try
         sys = System(raw_file_dir, dyr_file)
+        for l in get_components(PSY.StandardLoad, sys)
+            transform_load_to_constant_impedance(l)
+        end
 
         # Define Simulation Problem
         sim = Simulation!(
@@ -112,13 +118,13 @@ function test_gensae_mass_matrix(dyr_file, csv_file, init_cond, eigs_value)
         ) #Type of Fault
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in init_cond
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
 
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
@@ -129,7 +135,7 @@ function test_gensae_mass_matrix(dyr_file, csv_file, init_cond, eigs_value)
         @test LinearAlgebra.norm(eigs - eigs_value) < 1e-3
 
         # Solve problem
-        @test execute!(sim, Rodas4(), dtmax = 0.005, saveat = 0.005) ==
+        @test execute!(sim, Rodas4(); dtmax = 0.005, saveat = 0.005) ==
               PSID.SIMULATION_FINALIZED
         results = read_results(sim)
 
@@ -138,6 +144,8 @@ function test_gensae_mass_matrix(dyr_file, csv_file, init_cond, eigs_value)
         t = series[1]
         δ = series[2]
         series2 = get_voltage_magnitude_series(results, 102)
+        # TODO: Test I_fd with PSSE
+        series3 = get_field_current_series(results, "generator-102-1")
 
         t_psse, δ_psse = get_csv_delta(csv_file)
 
@@ -153,7 +161,7 @@ function test_gensae_mass_matrix(dyr_file, csv_file, init_cond, eigs_value)
         @test isa(rpower, Tuple{Vector{Float64}, Vector{Float64}})
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end
 

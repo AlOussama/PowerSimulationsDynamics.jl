@@ -30,7 +30,7 @@ Similarly, a Mass Matrix model can be executed using `Rodas4` solver.
 ```julia
 using OrdinaryDiffEq
 sim2 = Simulation(
-    ResidualModel,
+    MassMatrixModel,
     sys,
     pwd(),
     (0.0, 20.0),
@@ -66,7 +66,6 @@ The function [`get_state_series`](@ref)`(results, ("DeviceName", :StateSymbol)` 
 ### Explore Reference Setpoints
 
 The function [`get_setpoints`](@ref)`(sim)` can be used to obtain the reference setpoints of each dynamic device. **Note:** If a setpoint was changed via a perturbation, this function will return the modified setpoint.
-
 
 ## Keyword Arguments
 

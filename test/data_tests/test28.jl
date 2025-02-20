@@ -3,15 +3,15 @@ using NLsolve
 const PSY = PowerSystems
 
 include(joinpath(dirname(@__FILE__), "dynamic_test_data.jl"))
-include(joinpath(dirname(@__FILE__), "data_utils.jl"))
+
 ############### Data Network ########################
 sys_dir = joinpath(dirname(@__FILE__), "OMIB.raw")
-sys = System(sys_dir, runchecks = false)
+sys = System(sys_dir; runchecks = false)
 add_source_to_ref(sys)
 ############### Data Dynamic devices ########################
 
 function pvs_simple(source)
-    return PeriodicVariableSource(
+    return PeriodicVariableSource(;
         name = get_name(source),
         R_th = get_R_th(source),
         X_th = get_X_th(source),
@@ -33,3 +33,7 @@ add_component!(sys, case_gen, gen)
 source = [s for s in get_components(Source, sys)][1]
 pvs = pvs_simple(source)
 add_component!(sys, pvs, source)
+
+for l in get_components(PSY.StandardLoad, sys)
+    transform_load_to_constant_impedance(l)
+end

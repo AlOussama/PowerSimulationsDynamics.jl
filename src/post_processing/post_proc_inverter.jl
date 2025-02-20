@@ -8,6 +8,8 @@ function compute_output_current(
     dynamic_device::G,
     V_R::Vector{Float64},
     V_I::Vector{Float64},
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
 ) where {G <: PSY.DynamicInverter}
 
     #Obtain Data
@@ -28,7 +30,211 @@ function compute_output_current(
         base_power_ratio,
         res,
         dynamic_device,
+        dt,
+        unique_timestamps,
     )
+end
+
+"""
+Function to obtain the field current time series of a Dynamic Inverter model out of the DAE Solution. It receives the simulation inputs,
+the dynamic device and bus voltage. It must return nothing since field current does not exists in inverters.
+
+"""
+function compute_field_current(
+    res::SimulationResults,
+    dynamic_device::G,
+    V_R::Vector{Float64},
+    V_I::Vector{Float64},
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
+) where {G <: PSY.DynamicInverter}
+    @warn("Field current does not exist in inverters. Returning zeros.")
+    return (nothing, zeros(length(V_R)))
+end
+
+"""
+Function to obtain the field current time series of a Dynamic Inverter model out of the DAE Solution. It receives the simulation inputs,
+the dynamic device and bus voltage. It must return nothing since field voltage does not exists in inverters.
+
+"""
+function compute_field_voltage(
+    res::SimulationResults,
+    dynamic_device::G,
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
+) where {G <: PSY.DynamicInverter}
+    @warn("Field voltage does not exist in inverters. Returning zeros.")
+    _, state = _post_proc_state_series(res.solution, 1, dt, unique_timestamps)
+    return (nothing, zeros(length(state)))
+end
+
+"""
+Function to obtain the mechanical torque time series of a Dynamic Inverter model out of the DAE Solution. It receives the simulation inputs,
+the dynamic device and bus voltage. It must return nothing since mechanical torque is not used in inverters.
+
+"""
+function compute_mechanical_torque(
+    res::SimulationResults,
+    dynamic_device::G,
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
+) where {G <: PSY.DynamicInverter}
+    @warn("Mechanical torque is not used in inverters. Returning zeros.")
+    _, state = _post_proc_state_series(res.solution, 1, dt, unique_timestamps)
+    return (nothing, zeros(length(state)))
+end
+
+function compute_frequency(
+    res::SimulationResults,
+    dyn_device::G,
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
+) where {G <: PSY.DynamicInverter}
+    outer_control = PSY.get_outer_control(dyn_device)
+    frequency_estimator = PSY.get_freq_estimator(dyn_device)
+    return _frequency(
+        outer_control,
+        frequency_estimator,
+        PSY.get_name(dyn_device),
+        res,
+        dyn_device,
+        dt,
+        unique_timestamps,
+    )
+end
+
+"""
+Function to obtain the frequency time series of a virtual inertia grid forming inverter out of the DAE Solution. It is dispatched via the OuterControl type.
+
+"""
+function _frequency(
+    ::PSY.OuterControl{PSY.VirtualInertia, PSY.ReactivePowerDroop},
+    ::F,
+    name::String,
+    res::SimulationResults,
+    dynamic_device::G,
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
+) where {F <: PSY.FrequencyEstimator, G <: PSY.DynamicInverter}
+    ts, ω = post_proc_state_series(res, (name, :ω_oc), dt, unique_timestamps)
+    return ts, ω
+end
+
+"""
+Function to obtain the frequency time series of a droop grid forming inverter out of the DAE Solution. It is dispatched via the OuterControl type.
+
+"""
+function _frequency(
+    outer_control::PSY.OuterControl{PSY.ActivePowerDroop, PSY.ReactivePowerDroop},
+    ::F,
+    name::String,
+    res::SimulationResults,
+    dynamic_device::G,
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
+) where {F <: PSY.FrequencyEstimator, G <: PSY.DynamicInverter}
+    P_ref = PSY.get_P_ref(PSY.get_active_power_control(outer_control))
+    ω_ref = PSY.get_ω_ref(dynamic_device)
+    ts, p_oc = post_proc_state_series(res, (name, :p_oc), dt, unique_timestamps)
+    Rp = PSY.get_Rp(outer_control.active_power_control)
+    ω_oc = ω_ref .+ Rp .* (P_ref .- p_oc)
+    return ts, ω_oc
+end
+
+"""
+Function to obtain the frequency time series of a VOC grid forming inverter out of the DAE Solution. It is dispatched via the OuterControl type.
+
+"""
+function _frequency(
+    outer_control::PSY.OuterControl{
+        PSY.ActiveVirtualOscillator,
+        PSY.ReactiveVirtualOscillator,
+    },
+    ::F,
+    name::String,
+    res::SimulationResults,
+    dynamic_device::G,
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
+) where {F <: PSY.FrequencyEstimator, G <: PSY.DynamicInverter}
+    p_ref = PSY.get_P_ref(PSY.get_active_power_control(outer_control))
+    q_ref = PSY.get_Q_ref(PSY.get_reactive_power_control(outer_control))
+    active_power_control = PSY.get_active_power_control(outer_control)
+    k1 = PSY.get_k1(active_power_control)
+    ψ = PSY.get_ψ(active_power_control)
+    γ = ψ - pi / 2
+    ts, E_oc = post_proc_state_series(res, (name, :E_oc), dt, unique_timestamps)
+    _, p_elec_out = post_proc_activepower_series(res, name, dt, unique_timestamps)
+    _, q_elec_out = post_proc_reactivepower_series(res, name, dt, unique_timestamps)
+    ω_sys = _system_frequency_series(res, dt, unique_timestamps)
+    ω_oc =
+        ω_sys .+
+        (k1 ./ E_oc .^ 2) .*
+        (cos(γ) .* (p_ref .- p_elec_out) .+ sin(γ) .* (q_ref .- q_elec_out))
+    return ts, ω_oc
+end
+
+"""
+Function to obtain the frequency time series of a grid-following inverter with ReducedOrderPLL out of the DAE Solution. It is dispatched via the OuterControl and FrequencyEstimator type.
+
+"""
+function _frequency(
+    ::PSY.OuterControl{PSY.ActivePowerPI, PSY.ReactivePowerPI},
+    freq_estimator::PSY.ReducedOrderPLL,
+    name::String,
+    res::SimulationResults,
+    dynamic_device::G,
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
+) where {G <: PSY.DynamicInverter}
+    kp_pll = PSY.get_kp_pll(freq_estimator)
+    ki_pll = PSY.get_ki_pll(freq_estimator)
+    ts, vpll_q = post_proc_state_series(res, (name, :vq_pll), dt, unique_timestamps)
+    _, ε_pll = post_proc_state_series(res, (name, :ε_pll), dt, unique_timestamps)
+    pi_output = [pi_block(x, y, kp_pll, ki_pll)[1] for (x, y) in zip(vpll_q, ε_pll)]
+    ω_pll = pi_output .+ 1.0 #See Hug ISGT-EUROPE2018 eqn. 9
+    return ts, ω_pll
+end
+
+"""
+Function to obtain the frequency time series of a grid-following inverter with KauraPLL out of the DAE Solution. It is dispatched via the OuterControl and FrequencyEstimator type.
+
+"""
+function _frequency(
+    ::PSY.OuterControl{PSY.ActivePowerPI, PSY.ReactivePowerPI},
+    freq_estimator::PSY.KauraPLL,
+    name::String,
+    res::SimulationResults,
+    dynamic_device::G,
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
+) where {G <: PSY.DynamicInverter}
+    kp_pll = PSY.get_kp_pll(freq_estimator)
+    ki_pll = PSY.get_ki_pll(freq_estimator)
+    ts, vpll_q = post_proc_state_series(res, (name, :vq_pll), dt, unique_timestamps)
+    _, vpll_d = post_proc_state_series(res, (name, :vd_pll), dt, unique_timestamps)
+    _, ε_pll = post_proc_state_series(res, (name, :ε_pll), dt, unique_timestamps)
+    pi_output =
+        [pi_block(x, y, kp_pll, ki_pll)[1] for (x, y) in zip(atan.(vpll_q, vpll_d), ε_pll)]
+    ω_pll = pi_output .+ 1.0 #See Hug ISGT-EUROPE2018 eqn. 9
+    return ts, ω_pll
+end
+
+function _system_frequency_series(
+    res::SimulationResults,
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
+)
+    if get_global_vars_update_pointers(res)[GLOBAL_VAR_SYS_FREQ_INDEX] == 0
+        ω_sys = 1.0
+    else
+        ω_sys_state = get_state_from_ix(
+            get_global_index(res),
+            get_global_vars_update_pointers(res)[GLOBAL_VAR_SYS_FREQ_INDEX],
+        )
+        ω_sys = post_proc_state_series(res, ω_sys_state, dt, unique_timestamps)[2]
+    end
+    return ω_sys
 end
 
 """
@@ -44,11 +250,13 @@ function _output_current(
     base_power_ratio::Float64,
     res::SimulationResults,
     dynamic_device::G,
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
 ) where {C <: PSY.Converter, G <: PSY.DynamicInverter}
-    ir_filter = post_proc_state_series(res, (name, :ir_filter))
-    ii_filter = post_proc_state_series(res, (name, :ii_filter))
+    ts, ir_filter = post_proc_state_series(res, (name, :ir_filter), dt, unique_timestamps)
+    ts, ii_filter = post_proc_state_series(res, (name, :ii_filter), dt, unique_timestamps)
 
-    return base_power_ratio * ir_filter, base_power_ratio * ii_filter
+    return ts, base_power_ratio * ir_filter, base_power_ratio * ii_filter
 end
 
 """
@@ -63,7 +271,9 @@ function _output_current(
     V_I::Vector{Float64},
     base_power_ratio::Float64,
     res::SimulationResults,
-    dynamic_device::G,
+    ::G,
+    dt::Union{Nothing, Float64, Vector{Float64}},
+    unique_timestamps::Bool,
 ) where {G <: PSY.DynamicInverter}
 
     #Get Converter parameters
@@ -86,9 +296,9 @@ function _output_current(
     Iq_extra = max.(K_hv * (V_t .- Vo_lim), 0.0)
 
     #Compute current
-    Ip = post_proc_state_series(res, (name, :Ip))
-    Iq = post_proc_state_series(res, (name, :Iq))
-    Vmeas = post_proc_state_series(res, (name, :Vmeas))
+    ts, Ip = post_proc_state_series(res, (name, :Ip), dt, unique_timestamps)
+    _, Iq = post_proc_state_series(res, (name, :Iq), dt, unique_timestamps)
+    _, Vmeas = post_proc_state_series(res, (name, :Vmeas), dt, unique_timestamps)
     Ip_sat = Ip
     if Lvpl_sw == 1
         LVPL = get_LVPL_gain.(Vmeas, Zerox, Brkpt, Lvpl1)
@@ -96,7 +306,7 @@ function _output_current(
     end
     Id_cnv = G_lv .* Ip_sat
     Iq_cnv = -Iq - Iq_extra
-    θ = atan.(V_I ./ V_R)
+    θ = atan.(V_I, V_R)
     Id_cnv = G_lv .* Ip_sat
     Iq_cnv = -Iq - Iq_extra
     Ir_cnv = Id_cnv .* cos.(θ) - Iq_cnv .* sin.(θ)
@@ -129,5 +339,5 @@ function _output_current(
         Ii_filt = Ii_cnv
     end
 
-    return base_power_ratio * Ir_filt, base_power_ratio * Ii_filt
+    return ts, base_power_ratio * Ir_filt, base_power_ratio * Ii_filt
 end

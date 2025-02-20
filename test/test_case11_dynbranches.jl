@@ -24,8 +24,7 @@ Ybus_change = NetworkSwitch(
 ) #New YBus
 
 @testset "Test 11 Dynamic Branches ResidualModel" begin
-    path = (joinpath(pwd(), "test-11"))
-    !isdir(path) && mkdir(path)
+    path = mktempdir()
     try
         # Define Simulation Problem
         sim = Simulation!(
@@ -39,12 +38,12 @@ Ybus_change = NetworkSwitch(
         init_conds = read_initial_conditions(sim)
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in test10_x0_init
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
@@ -62,13 +61,12 @@ Ybus_change = NetworkSwitch(
         series = get_voltage_magnitude_series(results, 102)
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end
 
 @testset "Test 11 Dynamic Branches MassMatrixModel" begin
-    path = (joinpath(pwd(), "test-11"))
-    !isdir(path) && mkdir(path)
+    path = mktempdir()
     try
         # Define Simulation Problem
         sim = Simulation!(
@@ -80,12 +78,12 @@ end
         )
 
         # Test Initial Condition
-        diff = [0.0]
+        diff_val = [0.0]
         res = get_init_values_for_comparison(sim)
         for (k, v) in test10_x0_init
-            diff[1] += LinearAlgebra.norm(res[k] - v)
+            diff_val[1] += LinearAlgebra.norm(res[k] - v)
         end
-        @test (diff[1] < 1e-3)
+        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
@@ -103,6 +101,6 @@ end
         series = get_voltage_magnitude_series(results, 102)
     finally
         @info("removing test files")
-        rm(path, force = true, recursive = true)
+        rm(path; force = true, recursive = true)
     end
 end

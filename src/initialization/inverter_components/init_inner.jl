@@ -2,7 +2,7 @@ function initialize_inner!(
     device_states,
     static::PSY.StaticInjection,
     dynamic_device::DynamicWrapper{
-        PSY.DynamicInverter{C, O, PSY.VoltageModeControl, DC, P, F},
+        PSY.DynamicInverter{C, O, PSY.VoltageModeControl, DC, P, F, L},
     },
     inner_vars::AbstractVector,
 ) where {
@@ -11,6 +11,7 @@ function initialize_inner!(
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Obtain external states inputs for component
@@ -103,7 +104,7 @@ function initialize_inner!(
         out[8] = Vq_cnv_ref - V_dq_cnv0[q]
     end
     x0 = [θ0_oc, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-    sol = NLsolve.nlsolve(f!, x0)
+    sol = NLsolve.nlsolve(f!, x0; ftol = STRICT_NLSOLVE_F_TOLERANCE)
     if !NLsolve.converged(sol)
         @warn("Initialization in Inner Control failed")
     else
@@ -117,10 +118,14 @@ function initialize_inner!(
         inner_vars[θ_oc_var] = sol_x0[1]
         set_V_ref(dynamic_device, sol_x0[2])
         PSY.set_V_ref!(
-            PSY.get_reactive_power(PSY.get_outer_control(dynamic_device)),
+            PSY.get_reactive_power_control(PSY.get_outer_control(dynamic_device)),
             sol_x0[2],
         )
         inner_vars[V_oc_var] = sol_x0[2]
+        # Update state if OuterControl is VOC
+        if O <: PSY.OuterControl{PSY.ActiveVirtualOscillator, PSY.ReactiveVirtualOscillator}
+            outer_states[2] = sol_x0[2]
+        end
         #Update Converter modulation
         m0_dq = (ri_dq(sol_x0[1] + pi / 2) * [Vr_cnv0; Vi_cnv0]) ./ Vdc
         inner_vars[md_var] = m0_dq[d]
@@ -135,13 +140,14 @@ function initialize_inner!(
         inner_states[5] = sol_x0[7] #ϕ_d
         inner_states[6] = sol_x0[8] #ϕ_q
     end
+    return
 end
 
 function initialize_inner!(
     device_states,
     static::PSY.StaticInjection,
     dynamic_device::DynamicWrapper{
-        PSY.DynamicInverter{C, O, PSY.CurrentModeControl, DC, P, F},
+        PSY.DynamicInverter{C, O, PSY.CurrentModeControl, DC, P, F, L},
     },
     inner_vars::AbstractVector,
 ) where {
@@ -150,6 +156,7 @@ function initialize_inner!(
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Obtain external states inputs for component
@@ -204,7 +211,7 @@ function initialize_inner!(
         out[2] = Vq_cnv_ref - V_dq_cnv0[q]
     end
     x0 = [0.0, 0.0]
-    sol = NLsolve.nlsolve(f!, x0)
+    sol = NLsolve.nlsolve(f!, x0; ftol = STRICT_NLSOLVE_F_TOLERANCE)
     if !NLsolve.converged(sol)
         @warn("Initialization in Inner Control failed")
     else
@@ -219,13 +226,14 @@ function initialize_inner!(
         inner_states[1] = sol_x0[1] #γ_d
         inner_states[2] = sol_x0[2] #γ_q
     end
+    return
 end
 
 function initialize_inner!(
     device_states,
     static::PSY.StaticInjection,
     dynamic_device::DynamicWrapper{
-        PSY.DynamicInverter{C, O, PSY.RECurrentControlB, DC, P, F},
+        PSY.DynamicInverter{C, O, PSY.RECurrentControlB, DC, P, F, L},
     },
     inner_vars::AbstractVector,
 ) where {
@@ -234,11 +242,12 @@ function initialize_inner!(
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
     # Obtain inner variables for component
-    V_R = inner_vars[Vr_inv_var]
-    V_I = inner_vars[Vi_inv_var]
-    V_t = sqrt(V_R^2 + V_I^2)
+    Vr_filter = inner_vars[Vr_filter_var]
+    Vi_filter = inner_vars[Vi_filter_var]
+    V_t = sqrt(Vr_filter^2 + Vi_filter^2)
     Iq_cmd = inner_vars[Iq_ic_var]
     Ip_oc = inner_vars[Id_oc_var]
     Iq_oc = inner_vars[Iq_oc_var]
@@ -249,11 +258,19 @@ function initialize_inner!(
     PQ_Flag = PSY.get_PQ_Flag(inner_control)
 
     Ip_min, Ip_max, Iq_min, Iq_max =
-        current_limit_logic(inner_control, Base.RefValue{PQ_Flag}, V_t, Ip_oc, Iq_cmd)
-    Ip_min < Ip_oc < Ip_max ? nothing :
-    error("Inverter out of current limits. Check Power Flow or Parameters")
-    Iq_min < Iq_oc < Iq_max ? nothing :
-    error("Inverter out of current limits. Check Power Flow or Parameters")
+        current_limit_logic(inner_control, Val(PQ_Flag), V_t, Ip_oc, Iq_cmd)
+
+    if Ip_oc >= Ip_max + BOUNDS_TOLERANCE || Ip_min - BOUNDS_TOLERANCE >= Ip_oc
+        @error(
+            "Inverter $(PSY.get_name(static)) active current $(Ip_oc) out of limits $(Ip_min) $(Ip_max). Check Power Flow or Parameters"
+        )
+    end
+
+    if Iq_oc >= Iq_max + BOUNDS_TOLERANCE || Iq_min - BOUNDS_TOLERANCE >= Iq_oc
+        @error(
+            "Inverter $(PSY.get_name(static)) reactive current $(Iq_oc) out of limits $(Iq_min) $(Iq_max). Check Power Flow or Parameters"
+        )
+    end
 
     if Q_Flag == 0
         local_ix = get_local_state_ix(dynamic_device, PSY.RECurrentControlB)
@@ -276,4 +293,5 @@ function initialize_inner!(
     if PSY.get_V_ref0(inner_control) == 0.0
         PSY.set_V_ref0!(inner_control, V_t)
     end
+    return
 end

@@ -3,14 +3,14 @@ using NLsolve
 const PSY = PowerSystems
 
 include(joinpath(dirname(@__FILE__), "dynamic_test_data.jl"))
-include(joinpath(dirname(@__FILE__), "data_utils.jl"))
+
 ############### Data Network ########################
 sys_dir = joinpath(dirname(@__FILE__), "ThreeBusMultiLoad.raw")
-sys = System(sys_dir, runchecks = false)
+sys = System(sys_dir; runchecks = false)
 
 ############### Data Dynamic devices ########################
 function dyn_gen_marconato(generator)
-    return PSY.DynamicGenerator(
+    return PSY.DynamicGenerator(;
         name = get_name(generator),
         ω_ref = 1.0, # ω_ref,
         machine = machine_marconato(), #machine
@@ -22,7 +22,7 @@ function dyn_gen_marconato(generator)
 end
 
 function dyn_gen_marconato_tg(generator)
-    return PSY.DynamicGenerator(
+    return PSY.DynamicGenerator(;
         name = get_name(generator),
         ω_ref = 1.0, # ω_ref,
         machine = machine_marconato(), #machine
@@ -49,4 +49,8 @@ end
 for line in get_components(Line, sys)
     dyn_line = DynamicBranch(line)
     add_component!(sys, dyn_line)
+end
+
+for l in get_components(PSY.StandardLoad, sys)
+    transform_load_to_constant_impedance(l)
 end

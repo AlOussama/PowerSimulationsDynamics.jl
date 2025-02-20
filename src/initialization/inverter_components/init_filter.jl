@@ -1,7 +1,7 @@
 function initialize_filter!(
     device_states,
     static::PSY.StaticInjection,
-    dynamic_device::DynamicWrapper{PSY.DynamicInverter{C, O, IC, DC, P, PSY.LCLFilter}},
+    dynamic_device::DynamicWrapper{PSY.DynamicInverter{C, O, IC, DC, P, PSY.LCLFilter, L}},
     inner_vars::AbstractVector,
 ) where {
     C <: PSY.Converter,
@@ -9,6 +9,7 @@ function initialize_filter!(
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
     #PowerFlow Data
     P0 = PSY.get_active_power(static)
@@ -20,8 +21,8 @@ function initialize_filter!(
     V_I = Vm * sin(θ)
     V = V_R + V_I * 1im
     I = conj(S0 / V)
-    I_R = real(I)
-    I_I = imag(I)
+    Ir_filter = real(I)
+    Ii_filter = imag(I)
 
     #Get Parameters
     filter = PSY.get_filter(dynamic_device)
@@ -32,8 +33,6 @@ function initialize_filter!(
     rg = PSY.get_rg(filter)
 
     #Set parameters
-    Ir_filter = I_R
-    Ii_filter = I_I
     ω_sys = get_ω_ref(dynamic_device)
 
     #To solve Vr_cnv, Vi_cnv, Ir_cnv, Ii_cnv, Vr_filter, Vi_filter
@@ -58,10 +57,10 @@ function initialize_filter!(
         #𝜕Ii_filter/𝜕t
         out[6] = Vi_filter - V_I - rg * Ii_filter - ω_sys * lg * Ir_filter
     end
-    x0 = [V_R, V_I, I_R, I_I, V_R, V_I]
-    sol = NLsolve.nlsolve(f!, x0)
+    x0 = [V_R, V_I, Ir_filter, Ii_filter, V_R, V_I]
+    sol = NLsolve.nlsolve(f!, x0; ftol = STRICT_NLSOLVE_F_TOLERANCE)
     if !NLsolve.converged(sol)
-        @warn("Initialization in Filter failed")
+        @warn("Initialization in Filter failed $(PSY.get_name(static))")
     else
         sol_x0 = sol.zero
         #Update terminal voltages
@@ -70,9 +69,14 @@ function initialize_filter!(
         #Update Converter voltages
         inner_vars[Vr_cnv_var] = sol_x0[1]
         inner_vars[Vi_cnv_var] = sol_x0[2]
+        inner_vars[Ir_cnv_var] = sol_x0[3]
+        inner_vars[Ii_cnv_var] = sol_x0[4]
         #Update filter voltages
         inner_vars[Vr_filter_var] = sol_x0[5]
         inner_vars[Vi_filter_var] = sol_x0[6]
+        #Update filter currents
+        inner_vars[Ir_filter_var] = Ir_filter
+        inner_vars[Ii_filter_var] = Ii_filter
         #Update states
         filter_ix = get_local_state_ix(dynamic_device, PSY.LCLFilter)
         filter_states = @view device_states[filter_ix]
@@ -80,15 +84,16 @@ function initialize_filter!(
         filter_states[2] = sol_x0[4] #Ii_cnv
         filter_states[3] = sol_x0[5] #Vr_filter
         filter_states[4] = sol_x0[6] #Vi_filter
-        filter_states[5] = I_R #Ir_filter
-        filter_states[6] = I_I #Ii_filter
+        filter_states[5] = Ir_filter
+        filter_states[6] = Ii_filter
     end
+    return
 end
 
 function initialize_filter!(
     device_states,
     static::PSY.StaticInjection,
-    dynamic_device::DynamicWrapper{PSY.DynamicInverter{C, O, IC, DC, P, PSY.RLFilter}},
+    dynamic_device::DynamicWrapper{PSY.DynamicInverter{C, O, IC, DC, P, PSY.RLFilter, L}},
     inner_vars::AbstractVector,
 ) where {
     C <: PSY.Converter,
@@ -96,6 +101,7 @@ function initialize_filter!(
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
     #PowerFlow Data
     P0 = PSY.get_active_power(static)
@@ -113,15 +119,6 @@ function initialize_filter!(
     # PSS/e names I_I as Iq. But is calculated as Q/Vt
     I_I = imag(I)
 
-    # Update Control References
-    PSY.set_Q_ref!(PSY.get_converter(dynamic_device), Q0)
-    set_Q_ref(dynamic_device, Q0)
-    PSY.set_Q_ref!(PSY.get_reactive_power(PSY.get_outer_control(dynamic_device)), Q0)
-    PSY.set_P_ref!(PSY.get_active_power(PSY.get_outer_control(dynamic_device)), P0)
-    set_P_ref(dynamic_device, P0)
-    PSY.set_V_ref!(PSY.get_reactive_power(PSY.get_outer_control(dynamic_device)), Vm)
-    set_V_ref(dynamic_device, Vm)
-
     #Get Parameters
     filt = PSY.get_filter(dynamic_device)
     rf = PSY.get_rf(filt)
@@ -136,13 +133,20 @@ function initialize_filter!(
     #Update filter currents (output of converter)
     inner_vars[Ir_inv_var] = I_R
     inner_vars[Ii_inv_var] = I_I
+
     #Update converter currents
     V_cnv = V + (rf + lf * 1im) * I
     I_aux = V_cnv / (R_source + X_source * 1im)
     I_cnv = I + I_aux
 
+    #Update converter currents and voltages
     inner_vars[Vr_cnv_var] = real(V_cnv)
     inner_vars[Vi_cnv_var] = imag(V_cnv)
+    inner_vars[Vr_filter_var] = real(V_cnv)
+    inner_vars[Vi_filter_var] = imag(V_cnv)
     inner_vars[Ir_cnv_var] = real(I_cnv)
     inner_vars[Ii_cnv_var] = imag(I_cnv)
+    inner_vars[Ir_filter_var] = real(I_cnv)
+    inner_vars[Ii_filter_var] = imag(I_cnv)
+    return
 end

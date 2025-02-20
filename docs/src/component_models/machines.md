@@ -209,3 +209,33 @@ and for the GENSAE model the function used is:
 
 The parameters ``A`` and ``B`` for each function are computed using the two points given
 ``(1.0, \text{Se}(1.0))`` and ``(1.2, \text{Se}(1.2))``.
+
+
+## SauerPai Machine (6th Order) ```[SauerPaiMachine]```
+
+The Sauer Pai model defines 6 differential equations as follows:
+
+```math
+\begin{align}
+\dot{\psi}_d &= \Omega_b(r_ai_d + \omega \psi_q + v_d) \tag{9a} \\
+\dot{\psi}_q &= \Omega_b(r_ai_q - \omega \psi_d + v_q) \tag{9b} \\
+\dot{e}_q' &= \frac{1}{T_{d0}'} \left[(-e_q' - (x_d - x_d')(i_d + \gamma_{d2} \cdot  \dot{\psi}_d'') + v_f)\right] \tag{9c}\\
+\dot{e}_q' &= \frac{1}{T_{q0}'} \left[(-e_d' + (x_q - x_q')(i_q + \gamma_{q2} \cdot \dot{\psi}_q''))\right] \tag{9d}\\
+\dot{\psi}_d'' &= \frac{1}{T_{d0}''} \left[(-\psi_d'' + e_q' - (x_d' - x_l)\cdot i_d)\right] \tag{9e} \\
+\dot{\psi}_q'' &= \frac{1}{T_{q0}''} \left[(-\psi_q'' - e_d' - (x_q' - x_l)\cdot i_q)\right]  \tag{9f} \\
+i_d &= \frac{1}{x_d''} (\gamma_{d1} \cdot  e_q' - \psi_d + (1 - \gamma_{d1}) * \psi_d'') \tag{9g} \\
+i_q &= \frac{1}{x_q''} ((-\gamma_{q1} \cdot  e_d' - \psi_q + (1 - \gamma_{q1}) \cdot  \psi_q'') \tag{9h} \\
+\tau_e &= \psi_d i_q - \psi_q i_d \tag{9i}
+\end{align}
+```
+
+with
+
+```math
+\begin{align*}
+  \gamma_{d1} &= \frac{x_d'' - x_l}{x_d' - x_l} \\
+  \gamma_{q1} &= \frac{x_q'' - x_l}{x_q' - x_l} \\
+  \gamma_{d2} &= \frac{1 - \gamma_d1}{x_d' - x_l} \\
+  \gamma_{q2} &= \frac{1 - \gamma_q1}{x_q' - x_l}
+\end{align*}
+```

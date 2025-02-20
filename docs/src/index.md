@@ -1,7 +1,7 @@
 # PowerSimulationsDynamics.jl
 
 ```@meta
-CurrentModule = PowerSystems
+CurrentModule = PowerSimulationsDynamics
 ```
 
 ## Overview
@@ -12,12 +12,24 @@ doing Power Systems Dynamic Modeling with Low Inertia Energy Sources.
 The synchronous machine components supported here are based on commercial models and
 the academic components are derived from [Power System Modelling and Scripting](https://www.springer.com/gp/book/9783642136689).
 
-Inverter models support the model in ["A Virtual Synchronous Machine implementation for
+Inverter models support both commercial models, such as REPC, REEC and REGC type of models; and academic models obtained
+from grid-following and grid-forming literature such as in ["A Virtual Synchronous Machine implementation for
 distributed control of power converters in SmartGrids"](https://www.sciencedirect.com/science/article/pii/S0378779615000024)
+
+The background work on `PowerSimulationsDynamics.jl` is explained in [Revisiting Power Systems Time-domain Simulation Methods and Models](https://arxiv.org/pdf/2301.10043.pdf)
+
+```bibtex
+@article{lara2023revisiting,
+title={Revisiting Power Systems Time-domain Simulation Methods and Models},
+author={Lara, Jose Daniel and Henriquez-Auba, Rodrigo and Ramasubramanian, Deepak and Dhople, Sairaj and Callaway, Duncan S and Sanders, Seth},
+journal={arXiv preprint arXiv:2301.10043},
+year={2023}
+}
+```
 
 ## Installation
 
-The latest stable release of PowerSimulationsDynamics can be installed using the Julia package manager with
+The latest stable release of PowerSimulationsDynamics.jl can be installed using the Julia package manager with
 
 ```julia
 ] add PowerSimulationsDynamics
@@ -31,22 +43,19 @@ For the current development version, "checkout" this package with
 
 ## Structure
 
-The following figure shows the interactions between `PowerSimulationsDynamics.jl`, `PowerSystems.jl`, `DifferentialEquations.jl` and the integrators.
+The following figure shows the interactions between `PowerSimulationsDynamics.jl`, `PowerSystems.jl`, `ForwardDiff.jl`, `DiffEqBase.jl` and the integrators.
 The architecture of `PowerSimulationsDynamics.jl`  is such that the power system models are
 all self-contained and return the model function evaluations. The Jacobian is calculated
-through `DifferentialEquations.jl`'s common-interface enabling the use of any solver
-available in Julia. Considering that the resulting models are differential-algebraic
+using automatic differentiation through `ForwardDiff.jl`, that is used for both numerical
+integration and small signal analysis. Considering that the resulting models are differential-algebraic
 equations (DAE), the implementation focuses on the use of implicit solvers, in particular
-SUNDIALS since it has exceptional features applicable to large models — for instance,
-interfacing with distributed linear-solvers and GPU arrays. In addition, automatic
-differentiation is implemented using `ForwardDiff.jl` to obtain jacobians to perform
-small signal analysis.
+BDF and Rosenbrock methods.
 
 ```@raw html
-<img src="./assets/SoftwareLoop.png" width="65%"/>
+<img src="./assets/SoftwareLoop.jpg" width="65%"/>
 ``` ⠀
 
 ------------
-PowerSimulationsDynamics has been developed as part of the Scalable Integrated Infrastructure Planning
+PowerSimulationsDynamics.jl has been developed as part of the Scalable Integrated Infrastructure Planning
 (SIIP) initiative at the U.S. Department of Energy's National Renewable Energy
 Laboratory ([NREL](https://www.nrel.gov/))

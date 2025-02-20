@@ -24,7 +24,7 @@ function get_frequency_reference!(
         if length(dyn_devices) < 1
             throw(
                 IS.ConflictingInputsError(
-                    "ConstantFrequency model requires at least one generation unit at the Bus BusTypes.REF",
+                    "ConstantFrequency model requires at least one generation unit at the Bus ACBusTypes.REF",
                 ),
             )
         end
@@ -55,11 +55,11 @@ function get_frequency_reference!(
                     ),
                 )
             end
-            ref_devices = sort(ref_devices, by = x -> PSY.get_base_power(x))
+            ref_devices = sort(ref_devices; by = x -> PSY.get_base_power(x))
         elseif length(ref_devices) < 1
             throw(
                 IS.ConflictingInputsError(
-                    "ReferenceBus model requires at least one bus of type BusTypes.REF with a DynamicInjection or Source device connected to it",
+                    "ReferenceBus model requires at least one bus of type ACBusTypes.REF with a DynamicInjection or Source device connected to it",
                 ),
             )
         elseif length(ref_devices) != 1

@@ -19,7 +19,7 @@ function _mdl_ode_RE_active_controller_AB!(
     p_elec_out::ACCEPTED_REAL_TYPES,
     ω_sys::ACCEPTED_REAL_TYPES,
     Vt_filt::ACCEPTED_REAL_TYPES,
-    ::Type{Base.RefValue{1}},
+    ::Val{1},
     active_power_control::PSY.ActiveRenewableControllerAB,
     dynamic_device::DynamicWrapper{
         PSY.DynamicInverter{
@@ -32,6 +32,7 @@ function _mdl_ode_RE_active_controller_AB!(
             DC,
             P,
             F,
+            L,
         },
     },
     inner_vars::AbstractVector,
@@ -41,6 +42,7 @@ function _mdl_ode_RE_active_controller_AB!(
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Obtain external parameters
@@ -73,24 +75,33 @@ function _mdl_ode_RE_active_controller_AB!(
     f_err = deadband_function(ω_ref - ω_plant, fdbd1, fdbd2)
     p_droop = min(D_dn * f_err, 0.0) + max(D_up * f_err, 0.0)
     p_err = clamp(p_ref + p_droop - p_flt, fe_min, fe_max)
-    P_pi = K_pg * p_err + K_ig * ξ_P
-    P_pi_binary = P_min <= P_pi <= P_max ? 1.0 : 0.0
 
-    #Ramp and limits for p_ord
-    #Hard limits
-    p_ord_sat = clamp(p_ord, P_min_inner, P_max_inner)
-    p_ord_binary = P_min_inner <= p_ord <= P_max_inner ? 1.0 : 0.0
-    #Ramp limits: To check if 1/T_g has to be included or not
-    p_ord_in = clamp(p_ext - p_ord_sat, dP_min, dP_max)
+    #Compute block derivatives REPCA
+    _, dpflt_dt = low_pass(p_elec_out, p_flt, 1.0, T_p)
+    P_pi, dξP_dt = pi_block_nonwindup(p_err, ξ_P, K_pg, K_ig, P_min, P_max)
+    _, dpext_dt = low_pass(P_pi, p_ext, 1.0, T_g)
+
+    #Compute block derivatives REECB
+    p_ord_sat, dpord_dt = low_pass_nonwindup_ramp_limits(
+        p_ext,
+        p_ord,
+        1.0,
+        T_pord,
+        P_min_inner,
+        P_max_inner,
+        dP_min,
+        dP_max,
+    )
 
     #Update ODEs
-    active_controller_ode[1] = (1.0 / T_p) * (p_elec_out - p_flt)
-    active_controller_ode[2] = P_pi_binary * p_err
-    active_controller_ode[3] = (1.0 / T_g) * (P_pi - p_ext)
-    active_controller_ode[4] = p_ord_binary * (1.0 / T_pord) * p_ord_in
+    active_controller_ode[1] = dpflt_dt
+    active_controller_ode[2] = dξP_dt
+    active_controller_ode[3] = dpext_dt
+    active_controller_ode[4] = dpord_dt
 
     #Update Inner Vars: Ioc_pcmd
     inner_vars[Id_oc_var] = p_ord_sat / max(Vt_filt, VOLTAGE_DIVISION_LOWER_BOUND)
+    return
 end
 
 #Freq_Flag = 0
@@ -100,7 +111,7 @@ function _mdl_ode_RE_active_controller_AB!(
     p_elec_out::ACCEPTED_REAL_TYPES,
     ω_sys::ACCEPTED_REAL_TYPES,
     Vt_filt::ACCEPTED_REAL_TYPES,
-    ::Type{Base.RefValue{0}},
+    ::Val{0},
     active_power_control::PSY.ActiveRenewableControllerAB,
     dynamic_device::DynamicWrapper{
         PSY.DynamicInverter{
@@ -113,6 +124,7 @@ function _mdl_ode_RE_active_controller_AB!(
             DC,
             P,
             F,
+            L,
         },
     },
     inner_vars::AbstractVector,
@@ -122,6 +134,7 @@ function _mdl_ode_RE_active_controller_AB!(
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Obtain external parameters
@@ -132,11 +145,15 @@ function _mdl_ode_RE_active_controller_AB!(
     #Define internal states for outer control
     p_ord = active_controller_states[1]
 
+    #Compute block derivatives
+    _, dpord_dt = low_pass(p_ref, p_ord, 1.0, T_pord)
+
     #Update ODE
-    active_controller_ode[1] = (1.0 / T_pord) * (p_ref - p_ord)
+    active_controller_ode[1] = dpord_dt
 
     #Update Inner Vars: Ioc_pcmd
     inner_vars[Id_oc_var] = p_ord / max(Vt_filt, VOLTAGE_DIVISION_LOWER_BOUND)
+    return
 end
 
 ### Reactive Controllers ###
@@ -152,9 +169,9 @@ function _mdl_ode_RE_reactive_controller_AB!(
     reactive_controller_states::AbstractArray{<:ACCEPTED_REAL_TYPES},
     q_elec_out::ACCEPTED_REAL_TYPES,
     Vt_filt::ACCEPTED_REAL_TYPES,
-    ::Type{Base.RefValue{0}},
-    ::Type{Base.RefValue{0}},
-    ::Type{Base.RefValue{1}},
+    ::Val{0},
+    ::Val{0},
+    ::Val{1},
     reactive_power_control::PSY.ReactiveRenewableControllerAB,
     dynamic_device::DynamicWrapper{
         PSY.DynamicInverter{
@@ -167,6 +184,7 @@ function _mdl_ode_RE_reactive_controller_AB!(
             DC,
             P,
             F,
+            L,
         },
     },
     inner_vars::AbstractVector,
@@ -176,6 +194,7 @@ function _mdl_ode_RE_reactive_controller_AB!(
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Obtain external parameters
@@ -205,27 +224,26 @@ function _mdl_ode_RE_reactive_controller_AB!(
 
     #Compute additional variables
     q_err = clamp(deadband_function(q_ref - q_flt, dbd1, dbd2), e_min, e_max)
-    #Q error - PI controller
-    Q_pi = K_p * q_err + K_i * ξq_oc
-    Q_pi_sat = clamp(Q_pi, Q_min, Q_max)
-    Q_binary_logic = Q_min <= Q_pi <= Q_max ? 1.0 : 0.0
-    #Lead-Lag block
-    Q_ext = q_LL + (T_ft / T_fv) * Q_pi_sat
-    #PI voltage inner block
+
+    #Compute block derivatives REPCA
+    _, dqflt_dt = low_pass(q_elec_out, q_flt, 1.0, T_fltr)
+    Q_pi_sat, dξqoc_dt = pi_block_nonwindup(q_err, ξq_oc, K_p, K_i, Q_min, Q_max)
+    Q_ext, dqLL_dt = lead_lag(Q_pi_sat, q_LL, 1.0, T_ft, T_fv)
+
+    #Compute block derivatives REECB
     V_pi_in = clamp(Q_ext, Q_min_inner, Q_max_inner) - q_elec_out
-    V_pi = K_qp * V_pi_in + K_qi * ξ_Q
-    V_pi_sat = clamp(V_pi, V_min, V_max)
-    V_binary_logic = V_min <= V_pi <= V_max ? 1.0 : 0.0
+    V_pi_sat, dξQ_dt = pi_block_nonwindup(V_pi_in, ξ_Q, K_qp, K_qi, V_min, V_max)
 
     #Update ODEs
-    reactive_controller_ode[1] = (1.0 / T_fltr) * (q_elec_out - q_flt)
-    reactive_controller_ode[2] = Q_binary_logic * q_err
-    reactive_controller_ode[3] = (1.0 / T_fv) * (Q_pi_sat * (1.0 - T_ft / T_fv) - q_LL)
-    reactive_controller_ode[4] = V_binary_logic * V_pi_in
+    reactive_controller_ode[1] = dqflt_dt
+    reactive_controller_ode[2] = dξqoc_dt
+    reactive_controller_ode[3] = dqLL_dt
+    reactive_controller_ode[4] = dξQ_dt
 
     #Update Inner Vars
     inner_vars[V_oc_var] = V_pi_sat - Vt_filt
     inner_vars[Iq_oc_var] = Q_ext / max(Vt_filt, VOLTAGE_DIVISION_LOWER_BOUND)
+    return
 end
 
 # VC_Flag == N/A && Ref_Flag == 0 && PF_Flag == 0 && V_Flag == 0
@@ -235,9 +253,9 @@ function _mdl_ode_RE_reactive_controller_AB!(
     reactive_controller_states::AbstractArray{<:ACCEPTED_REAL_TYPES},
     q_elec_out::ACCEPTED_REAL_TYPES,
     Vt_filt::ACCEPTED_REAL_TYPES,
-    ::Type{Base.RefValue{0}},
-    ::Type{Base.RefValue{0}},
-    ::Type{Base.RefValue{0}},
+    ::Val{0},
+    ::Val{0},
+    ::Val{0},
     reactive_power_control::PSY.ReactiveRenewableControllerAB,
     dynamic_device::DynamicWrapper{
         PSY.DynamicInverter{
@@ -250,6 +268,7 @@ function _mdl_ode_RE_reactive_controller_AB!(
             DC,
             P,
             F,
+            L,
         },
     },
     inner_vars::AbstractVector,
@@ -259,6 +278,7 @@ function _mdl_ode_RE_reactive_controller_AB!(
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
     #Obtain external parameters
     q_ref = get_Q_ref(dynamic_device)
@@ -282,21 +302,21 @@ function _mdl_ode_RE_reactive_controller_AB!(
 
     #Compute additional variables
     q_err = clamp(deadband_function(q_ref - q_flt, dbd1, dbd2), e_min, e_max)
-    #Q error - PI controller
-    Q_pi = K_p * q_err + K_i * ξq_oc
-    Q_pi_sat = clamp(Q_pi, Q_min, Q_max)
-    Q_binary_logic = Q_min <= Q_pi <= Q_max ? 1.0 : 0.0
-    #Lead-Lag block
-    Q_ext = q_LL + (T_ft / T_fv) * Q_pi_sat
+
+    #Compute block derivatives REPCA
+    _, dqflt_dt = low_pass(q_elec_out, q_flt, 1.0, T_fltr)
+    Q_pi_sat, dξqoc_dt = pi_block_nonwindup(q_err, ξq_oc, K_p, K_i, Q_min, Q_max)
+    Q_ext, dqLL_dt = lead_lag(Q_pi_sat, q_LL, 1.0, T_ft, T_fv)
 
     #Update ODEs
-    reactive_controller_ode[1] = (1.0 / T_fltr) * (q_elec_out - q_flt)
-    reactive_controller_ode[2] = Q_binary_logic * q_err
-    reactive_controller_ode[3] = (1.0 / T_fv) * (Q_pi_sat * (1.0 - T_ft / T_fv) - q_LL)
+    reactive_controller_ode[1] = dqflt_dt
+    reactive_controller_ode[2] = dξqoc_dt
+    reactive_controller_ode[3] = dqLL_dt
 
     #Update Inner Vars
     inner_vars[V_oc_var] = Q_ext - Vt_filt
     inner_vars[Iq_oc_var] = Q_ext / max(Vt_filt, VOLTAGE_DIVISION_LOWER_BOUND)
+    return
 end
 
 # VC_Flag == 0 or 1 && Ref_Flag == 1 && PF_Flag == 0 && V_Flag == 1
@@ -310,9 +330,9 @@ function _mdl_ode_RE_reactive_controller_AB!(
     reactive_controller_states,
     q_elec_out,
     Vt_filt,
-    ::Type{Base.RefValue{1}},
-    ::Type{Base.RefValue{0}},
-    ::Type{Base.RefValue{1}},
+    ::Val{1},
+    ::Val{0},
+    ::Val{1},
     reactive_power_control::PSY.ReactiveRenewableControllerAB,
     dynamic_device::DynamicWrapper{
         PSY.DynamicInverter{
@@ -325,6 +345,7 @@ function _mdl_ode_RE_reactive_controller_AB!(
             DC,
             P,
             F,
+            L,
         },
     },
     inner_vars::AbstractVector,
@@ -334,6 +355,7 @@ function _mdl_ode_RE_reactive_controller_AB!(
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
     #Obtain external parameters
     V_ref = get_V_ref(dynamic_device)
@@ -382,26 +404,26 @@ function _mdl_ode_RE_reactive_controller_AB!(
     end
     #Q error - PI controller
     q_err = clamp(deadband_function(V_ref - V_cflt, dbd1, dbd2), e_min, e_max)
-    Q_pi = K_p * q_err + K_i * ξq_oc
-    Q_pi_sat = clamp(Q_pi, Q_min, Q_max)
-    Q_binary_logic = Q_min <= Q_pi <= Q_max ? 1.0 : 0.0
-    #Lead-Lag block
-    Q_ext = q_LL + (T_ft / T_fv) * Q_pi_sat
-    #PI voltage inner block
+
+    #Compute block derivatives REPCA
+    _, dVcflt_dt = low_pass(V_flt_input, V_cflt, 1.0, T_fltr)
+    Q_pi_sat, dξqoc_dt = pi_block_nonwindup(q_err, ξq_oc, K_p, K_i, Q_min, Q_max)
+    Q_ext, dqLL_dt = lead_lag(Q_pi_sat, q_LL, 1.0, T_ft, T_fv)
+
+    #Compute block derivatives REECB
     V_pi_in = clamp(Q_ext, Q_min_inner, Q_max_inner) - q_elec_out
-    V_pi = K_qp * V_pi_in + K_qi * ξ_Q
-    V_pi_sat = clamp(V_pi, V_min, V_max)
-    V_binary_logic = V_min <= V_pi <= V_max ? 1.0 : 0.0
+    V_pi_sat, dξQ_dt = pi_block_nonwindup(V_pi_in, ξ_Q, K_qp, K_qi, V_min, V_max)
 
     #Update ODEs
-    reactive_controller_ode[1] = (1.0 / T_fltr) * (V_flt_input - V_cflt)
-    reactive_controller_ode[2] = Q_binary_logic * q_err
-    reactive_controller_ode[3] = (1.0 / T_fv) * (Q_pi_sat * (1.0 - T_ft / T_fv) - q_LL)
-    reactive_controller_ode[4] = V_binary_logic * V_pi_in
+    reactive_controller_ode[1] = dVcflt_dt
+    reactive_controller_ode[2] = dξqoc_dt
+    reactive_controller_ode[3] = dqLL_dt
+    reactive_controller_ode[4] = dξQ_dt
 
     #Update Inner Vars
     inner_vars[V_oc_var] = V_pi_sat - Vt_filt
     inner_vars[Iq_oc_var] = Q_ext / max(Vt_filt, VOLTAGE_DIVISION_LOWER_BOUND)
+    return
 end
 
 # VC_Flag == 0 or 1 && Ref_Flag == 1 && PF_Flag == 0 && V_Flag == 0
@@ -416,9 +438,9 @@ function _mdl_ode_RE_reactive_controller_AB!(
     reactive_controller_states,
     q_elec_out,
     Vt_filt,
-    ::Type{Base.RefValue{1}},
-    ::Type{Base.RefValue{0}},
-    ::Type{Base.RefValue{0}},
+    ::Val{1},
+    ::Val{0},
+    ::Val{0},
     reactive_power_control::PSY.ReactiveRenewableControllerAB,
     dynamic_device::DynamicWrapper{
         PSY.DynamicInverter{
@@ -431,6 +453,7 @@ function _mdl_ode_RE_reactive_controller_AB!(
             DC,
             P,
             F,
+            L,
         },
     },
     inner_vars::AbstractVector,
@@ -440,6 +463,7 @@ function _mdl_ode_RE_reactive_controller_AB!(
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
     #Obtain external parameters
     V_ref = get_V_ref(dynamic_device)
@@ -484,22 +508,24 @@ function _mdl_ode_RE_reactive_controller_AB!(
     end
     #Q error - PI controller
     q_err = clamp(deadband_function(V_ref - V_cflt, dbd1, dbd2), e_min, e_max)
-    Q_pi = K_p * q_err + K_i * ξq_oc
-    Q_pi_sat = clamp(Q_pi, Q_min, Q_max)
-    Q_binary_logic = Q_min <= Q_pi <= Q_max ? 1.0 : 0.0
-    #Lead-Lag block
-    Q_ext = q_LL + (T_ft / T_fv) * Q_pi_sat
+
+    #Compute block derivatives REPCA
+    _, dVcflt_dt = low_pass(V_flt_input, V_cflt, 1.0, T_fltr)
+    Q_pi_sat, dξqoc_dt = pi_block_nonwindup(q_err, ξq_oc, K_p, K_i, Q_min, Q_max)
+    Q_ext, dqLL_dt = lead_lag(Q_pi_sat, q_LL, 1.0, T_ft, T_fv)
+
     #Skip PI voltage inner block
     V_pi_sat = clamp(Q_ext, V_min, V_max)
 
     #Update ODEs
-    reactive_controller_ode[1] = (1.0 / T_fltr) * (V_flt_input - V_cflt)
-    reactive_controller_ode[2] = Q_binary_logic * q_err
-    reactive_controller_ode[3] = (1.0 / T_fv) * (Q_pi_sat * (1.0 - T_ft / T_fv) - q_LL)
+    reactive_controller_ode[1] = dVcflt_dt
+    reactive_controller_ode[2] = dξqoc_dt
+    reactive_controller_ode[3] = dqLL_dt
 
     #Update Inner Vars
     inner_vars[V_oc_var] = V_pi_sat - Vt_filt
     inner_vars[Iq_oc_var] = Q_ext / max(Vt_filt, VOLTAGE_DIVISION_LOWER_BOUND)
+    return
 end
 
 ############################################
@@ -519,14 +545,18 @@ function mdl_outer_ode!(
             DC,
             P,
             F,
+            L,
         },
     },
+    h,
+    t,
 ) where {
     C <: PSY.Converter,
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Obtain external states inputs for component
@@ -544,7 +574,7 @@ function mdl_outer_ode!(
 
     #Get Active Power Controller parameters
     outer_control = PSY.get_outer_control(dynamic_device)
-    active_power_control = PSY.get_active_power(outer_control)
+    active_power_control = PSY.get_active_power_control(outer_control)
     Ta = PSY.get_Ta(active_power_control) #VSM Inertia constant
     kd = PSY.get_kd(active_power_control) #VSM damping constant
     kω = PSY.get_kω(active_power_control) #Frequency droop gain
@@ -552,7 +582,7 @@ function mdl_outer_ode!(
     ωb = 2 * pi * f0 #Rated angular frequency
 
     #Get Reactive Power Controller parameters
-    reactive_power_control = PSY.get_reactive_power(outer_control)
+    reactive_power_control = PSY.get_reactive_power_control(outer_control)
     kq = PSY.get_kq(reactive_power_control) #Reactive power droop gain
     ωf = PSY.get_ωf(reactive_power_control) #Reactive power filter cutoff frequency
 
@@ -578,16 +608,20 @@ function mdl_outer_ode!(
     p_elec_out = Ir_filter * Vr_filter + Ii_filter * Vi_filter
     q_elec_out = -Ii_filter * Vr_filter + Ir_filter * Vi_filter
 
+    #Compute block derivatives
+    _, dqm_dt = low_pass(q_elec_out, qm, 1.0, 1.0 / ωf)
+
     #Compute 3 states ODEs
     output_ode[local_ix[1]] = ωb * (ω_oc - ω_sys)
     output_ode[local_ix[2]] =
         (p_ref / Ta - p_elec_out / Ta - kd * (ω_oc - ω_pll) / Ta - kω * (ω_oc - ω_ref) / Ta)
-    output_ode[local_ix[3]] = (ωf * (q_elec_out - qm))
+    output_ode[local_ix[3]] = dqm_dt
 
     #Update inner vars
     inner_vars[θ_oc_var] = θ_oc
     inner_vars[ω_oc_var] = ω_oc
     inner_vars[V_oc_var] = V_ref + kq * (q_ref - qm)
+    return
 end
 
 function mdl_outer_ode!(
@@ -603,14 +637,18 @@ function mdl_outer_ode!(
             DC,
             P,
             F,
+            L,
         },
     },
+    h,
+    t,
 ) where {
     C <: PSY.Converter,
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Obtain external states inputs for component
@@ -623,20 +661,16 @@ function mdl_outer_ode!(
     Ir_filter = device_states[external_ix[3]]
     Ii_filter = device_states[external_ix[4]]
 
-    #Obtain inner variables for component
-    V_tR = inner_vars[Vr_inv_var]
-    V_tI = inner_vars[Vi_inv_var]
-
     #Get Active Power Controller parameters
     outer_control = PSY.get_outer_control(dynamic_device)
-    active_power_control = PSY.get_active_power(outer_control)
+    active_power_control = PSY.get_active_power_control(outer_control)
     Rp = PSY.get_Rp(active_power_control) #Droop Gain
     ωz = PSY.get_ωz(active_power_control) #Frequency cutoff frequency
     f0 = get_system_base_frequency(dynamic_device)
     ωb = 2 * pi * f0 #Rated angular frequency
 
     #Get Reactive Power Controller parameters
-    reactive_power_control = PSY.get_reactive_power(outer_control)
+    reactive_power_control = PSY.get_reactive_power_control(outer_control)
     kq = PSY.get_kq(reactive_power_control) #Reactive power droop gain
     ωf = PSY.get_ωf(reactive_power_control) #Reactive power filter cutoff frequency
 
@@ -665,15 +699,119 @@ function mdl_outer_ode!(
     #Compute Frequency from Droop
     ω_oc = ω_ref + Rp * (p_ref - pm)
 
+    #Compute block derivatives
+    _, dpm_dt = low_pass(p_elec_out, pm, 1.0, 1.0 / ωz)
+    _, dqm_dt = low_pass(q_elec_out, qm, 1.0, 1.0 / ωf)
+
+    ext = PSY.get_ext(outer_control)
+    bool_val = get(ext, "is_not_reference", 1.0)
+
     #Compute 3 states ODEs
-    output_ode[local_ix[1]] = ωb * (ω_oc - ω_sys)
-    output_ode[local_ix[2]] = (ωz * (p_elec_out - pm))
-    output_ode[local_ix[3]] = (ωf * (q_elec_out - qm))
+    output_ode[local_ix[1]] = bool_val * ωb * (ω_oc - ω_sys)
+    output_ode[local_ix[2]] = dpm_dt
+    output_ode[local_ix[3]] = dqm_dt
 
     #Update inner vars
     inner_vars[θ_oc_var] = θ_oc
     inner_vars[ω_oc_var] = ω_oc
     inner_vars[V_oc_var] = V_ref + kq * (q_ref - qm)
+    return
+end
+
+function mdl_outer_ode!(
+    device_states::AbstractArray{<:ACCEPTED_REAL_TYPES},
+    output_ode::AbstractArray{<:ACCEPTED_REAL_TYPES},
+    inner_vars::AbstractArray{<:ACCEPTED_REAL_TYPES},
+    ω_sys::ACCEPTED_REAL_TYPES,
+    dynamic_device::DynamicWrapper{
+        PSY.DynamicInverter{
+            C,
+            PSY.OuterControl{PSY.ActiveVirtualOscillator, PSY.ReactiveVirtualOscillator},
+            IC,
+            DC,
+            P,
+            F,
+            L,
+        },
+    },
+    h,
+    t,
+) where {
+    C <: PSY.Converter,
+    IC <: PSY.InnerControl,
+    DC <: PSY.DCSource,
+    P <: PSY.FrequencyEstimator,
+    F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
+}
+
+    #Obtain external states inputs for component
+    external_ix = get_input_port_ix(
+        dynamic_device,
+        PSY.OuterControl{PSY.ActiveVirtualOscillator, PSY.ReactiveVirtualOscillator},
+    )
+    Vr_filter = device_states[external_ix[1]]
+    Vi_filter = device_states[external_ix[2]]
+    Ir_filter = device_states[external_ix[3]]
+    Ii_filter = device_states[external_ix[4]]
+
+    #Get Active Power Controller parameters
+    outer_control = PSY.get_outer_control(dynamic_device)
+    active_power_control = PSY.get_active_power_control(outer_control)
+    k1 = PSY.get_k1(active_power_control)
+    ψ = PSY.get_ψ(active_power_control)
+    f0 = get_system_base_frequency(dynamic_device)
+    ωb = 2 * pi * f0 #Rated angular frequency
+
+    #Get Reactive Power Controller parameters
+    reactive_power_control = PSY.get_reactive_power_control(outer_control)
+    k2 = PSY.get_k2(reactive_power_control)
+
+    #Obtain external parameters
+    p_ref = get_P_ref(dynamic_device)
+    V_ref = get_V_ref(dynamic_device)
+    q_ref = get_Q_ref(dynamic_device)
+
+    #Obtain indices for component w/r to device
+    local_ix = get_local_state_ix(
+        dynamic_device,
+        PSY.OuterControl{PSY.ActiveVirtualOscillator, PSY.ReactiveVirtualOscillator},
+    )
+
+    #Define internal states for frequency estimator
+    internal_states = @view device_states[local_ix]
+    θ_oc = internal_states[1]
+    E_oc = internal_states[2]
+
+    #Obtain additional expressions
+    p_elec_out = Ir_filter * Vr_filter + Ii_filter * Vi_filter
+    q_elec_out = -Ii_filter * Vr_filter + Ir_filter * Vi_filter
+
+    #Compute Frequency from VOC
+    γ = ψ - pi / 2
+    ω_oc =
+        ω_sys +
+        (k1 / E_oc^2) * (cos(γ) * (p_ref - p_elec_out) + sin(γ) * (q_ref - q_elec_out))
+
+    #Compute voltage derivatives
+    dEoc_dt =
+        ωb * (
+            (k1 / E_oc) * (-sin(γ) * (p_ref - p_elec_out) + cos(γ) * (q_ref - q_elec_out)) +
+            k2 * (V_ref^2 - E_oc^2) * E_oc
+        )
+
+    ext = PSY.get_ext(outer_control)
+    bool_val = get(ext, "is_not_reference", 1.0)
+
+    #Compute 2 states ODEs
+    output_ode[local_ix[1]] = bool_val * ωb * (ω_oc - ω_sys)
+    output_ode[local_ix[2]] = dEoc_dt
+
+    #Update inner vars
+    inner_vars[θ_oc_var] = θ_oc
+    inner_vars[ω_oc_var] = ω_oc
+    inner_vars[V_oc_var] = E_oc
+    return
 end
 
 function mdl_outer_ode!(
@@ -689,14 +827,18 @@ function mdl_outer_ode!(
             DC,
             P,
             F,
+            L,
         },
     },
+    h,
+    t,
 ) where {
     C <: PSY.Converter,
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Obtain external states inputs for component
@@ -715,13 +857,13 @@ function mdl_outer_ode!(
 
     #Get Active Power Controller parameters
     outer_control = PSY.get_outer_control(dynamic_device)
-    active_power_control = PSY.get_active_power(outer_control)
+    active_power_control = PSY.get_active_power_control(outer_control)
     Kp_p = PSY.get_Kp_p(active_power_control) #Proportional Gain
     Ki_p = PSY.get_Ki_p(active_power_control) #Integral Gain
     ωz = PSY.get_ωz(active_power_control) #Frequency cutoff frequency
 
     #Get Reactive Power Controller parameters
-    reactive_power_control = PSY.get_reactive_power(outer_control)
+    reactive_power_control = PSY.get_reactive_power_control(outer_control)
     Kp_q = PSY.get_Kp_q(reactive_power_control) #Proportional Gain
     Ki_q = PSY.get_Ki_q(reactive_power_control) #Integral Gain
     ωf = PSY.get_ωf(reactive_power_control) #Reactive power filter cutoff frequency
@@ -747,17 +889,24 @@ function mdl_outer_ode!(
     p_elec_out = Ir_filter * Vr_filter + Ii_filter * Vi_filter
     q_elec_out = -Ii_filter * Vr_filter + Ir_filter * Vi_filter
 
+    #Compute block derivatives
+    Iq_pi, dσpoc_dt = pi_block(p_ref - p_oc, σp_oc, Kp_p, Ki_p)
+    _, dpoc_dt = low_pass(p_elec_out, p_oc, 1.0, 1.0 / ωz)
+    Id_pi, dσqoc_dt = pi_block(q_ref - q_oc, σq_oc, Kp_q, Ki_q)
+    _, dqoc_dt = low_pass(q_elec_out, q_oc, 1.0, 1.0 / ωf)
+
     #Compute 4 states ODEs
-    output_ode[local_ix[1]] = p_ref - p_oc
-    output_ode[local_ix[2]] = ωz * (p_elec_out - p_oc)
-    output_ode[local_ix[3]] = q_ref - q_oc
-    output_ode[local_ix[4]] = ωf * (q_elec_out - q_oc)
+    output_ode[local_ix[1]] = dσpoc_dt
+    output_ode[local_ix[2]] = dpoc_dt
+    output_ode[local_ix[3]] = dσqoc_dt
+    output_ode[local_ix[4]] = dqoc_dt
 
     #Update inner vars
     inner_vars[θ_oc_var] = θ_pll
     inner_vars[ω_oc_var] = ω_pll
-    inner_vars[Iq_oc_var] = Kp_p * (p_ref - p_oc) + Ki_p * σp_oc
-    inner_vars[Id_oc_var] = Kp_q * (q_ref - q_oc) + Ki_q * σq_oc
+    inner_vars[Iq_oc_var] = Iq_pi
+    inner_vars[Id_oc_var] = Id_pi
+    return
 end
 
 function mdl_outer_ode!(
@@ -776,14 +925,18 @@ function mdl_outer_ode!(
             DC,
             P,
             F,
+            L,
         },
     },
+    h,
+    t,
 ) where {
     C <: PSY.Converter,
     IC <: PSY.InnerControl,
     DC <: PSY.DCSource,
     P <: PSY.FrequencyEstimator,
     F <: PSY.Filter,
+    L <: Union{Nothing, PSY.OutputCurrentLimiter},
 }
 
     #Obtain external states inputs for component
@@ -794,24 +947,33 @@ function mdl_outer_ode!(
             PSY.ReactiveRenewableControllerAB,
         },
     )
-    Vt_filt = device_states[external_ix[1]]
+    inner_ctrl = PSY.get_inner_control(dynamic_device)
+    inner_ctrl_ix = get_local_state_ix(dynamic_device, typeof(inner_ctrl))
+    inner_ctrl_states = @view device_states[inner_ctrl_ix]
+    Vt_filt = inner_ctrl_states[1]
 
     #Monitoring power from other branch not supported.
-    V_R = inner_vars[Vr_inv_var]
-    V_I = inner_vars[Vi_inv_var]
-    I_R = inner_vars[Ir_inv_var]
-    I_I = inner_vars[Ii_inv_var]
-    p_elec_out = I_R * V_R + I_I * V_I
-    q_elec_out = -I_I * V_R + I_R * V_I
+    Vr_filter = inner_vars[Vr_filter_var]
+    Vi_filter = inner_vars[Vi_filter_var]
+    Ir_filter = inner_vars[Ir_filter_var]
+    Ii_filter = inner_vars[Ii_filter_var]
+    p_elec_out = Ir_filter * Vr_filter + Ii_filter * Vi_filter
+
+    Ir_cnv = inner_vars[Ir_cnv_var]
+    Ii_cnv = inner_vars[Ii_cnv_var]
+    Ir_cap = Ir_filter - Ir_cnv
+    Ii_cap = Ii_filter - Ii_cnv
+    Q_cap = -Ii_cap * Vr_filter + Ir_cap * Vi_filter
+    q_elec_out = -Ii_filter * Vr_filter + Ir_filter * Vi_filter - Q_cap
 
     #Get Active Power Controller parameters
     outer_control = PSY.get_outer_control(dynamic_device)
-    active_power_control = PSY.get_active_power(outer_control)
+    active_power_control = PSY.get_active_power_control(outer_control)
     #Note: Monitoring power from other branch not supported.
     Freq_Flag = PSY.get_Freq_Flag(active_power_control) #Frequency Flag
 
     #Get Reactive Power Controller parameters
-    reactive_power_control = PSY.get_reactive_power(outer_control)
+    reactive_power_control = PSY.get_reactive_power_control(outer_control)
     #Note: Monitoring power from other branch not supported.
     Ref_Flag = PSY.get_Ref_Flag(reactive_power_control)
     PF_Flag = PSY.get_PF_Flag(reactive_power_control)
@@ -843,7 +1005,7 @@ function mdl_outer_ode!(
         p_elec_out,
         ω_sys,
         Vt_filt,
-        Base.RefValue{Freq_Flag},
+        Val(Freq_Flag),
         active_power_control,
         dynamic_device,
         inner_vars,
@@ -855,11 +1017,12 @@ function mdl_outer_ode!(
         reactive_states,
         q_elec_out,
         Vt_filt,
-        Base.RefValue{Ref_Flag},
-        Base.RefValue{PF_Flag},
-        Base.RefValue{V_Flag},
+        Val(Ref_Flag),
+        Val(PF_Flag),
+        Val(V_Flag),
         reactive_power_control,
         dynamic_device,
         inner_vars,
     )
+    return
 end

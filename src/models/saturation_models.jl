@@ -36,7 +36,7 @@ function rectifier_function(I::Float64)
     end
 end
 
-function saturation_function(avr::PSY.ESAC1A, x::ACCEPTED_REAL_TYPES)
+function saturation_function(avr::Union{PSY.ESAC1A, PSY.EXAC1}, x::ACCEPTED_REAL_TYPES)
     Sat_A, Sat_B = PSY.get_saturation_coeffs(avr)
     return Sat_B * (x - Sat_A)^2 / x
 end
@@ -65,7 +65,7 @@ function output_pss_limiter(
     if V_cl == 0.0 || V_cu == 0.0
         return V_ss
     end
-    if V_cl <= V_ct <= V_cl
+    if V_cl <= V_ct <= V_cu
         return V_ss
     elseif V_ct < V_cl
         return zero(X)
@@ -92,7 +92,7 @@ end
 
 function current_limit_logic(
     inner_control::PSY.RECurrentControlB,
-    ::Type{Base.RefValue{0}}, #PQ_Flag = 0: Q Priority
+    ::Val{0}, #PQ_Flag = 0: Q Priority
     Vt_filt::X,
     Ip_cmd::X,
     Iq_cmd::X,
@@ -117,7 +117,7 @@ end
 
 function current_limit_logic(
     inner_control::PSY.RECurrentControlB,
-    ::Type{Base.RefValue{1}}, #PQ_Flag = 1: P Priority
+    ::Val{1}, #PQ_Flag = 1: P Priority
     Vt_filt::X,
     Ip_cmd::X,
     Iq_cmd::X,
@@ -131,10 +131,59 @@ function current_limit_logic(
     else
         local_I = sqrt(local_I)
     end
-    if local_I < Iq_max
+    if local_I < I_max
         Iq_max = local_I
     else
         Iq_max = I_max
+    end
+    Iq_min = -Iq_max
+    return Ip_min, Ip_max, Iq_min, Iq_max
+end
+
+function current_limit_logic(
+    device::PSY.AggregateDistributedGenerationA,
+    Ip_cmd::X,
+    Iq_cmd::X,
+) where {X <: ACCEPTED_REAL_TYPES}
+    PQ_Flag = PSY.get_PQ_Flag(device)
+    Gen_Flag = PSY.get_Gen_Flag(device)
+    I_max = PSY.get_I_max(device)
+
+    if PQ_Flag == 1  #P Priority 
+        Ip_max = I_max
+        local_I = I_max^2 - Ip_cmd^2
+        if local_I < 0
+            local_I = 0
+        else
+            local_I = sqrt(local_I)
+        end
+        if local_I < I_max
+            Iq_max = local_I
+        else
+            Iq_max = I_max
+        end
+    elseif PQ_Flag == 0     #Q Priority  
+        Iq_max = I_max
+        local_I = I_max^2 - Iq_cmd^2
+        if local_I < 0
+            local_I = 0
+        else
+            local_I = sqrt(local_I)
+        end
+        if local_I < I_max
+            Ip_max = local_I
+        else
+            Ip_max = I_max
+        end
+    else
+        @error "Unsupported value of PQ_Flag"
+    end
+    if Gen_Flag == 1
+        Ip_min = 0
+    elseif Gen_Flag == 0
+        Ip_min = -Ip_max
+    else
+        @error "Unsupported value of Gen_Flag"
     end
     Iq_min = -Iq_max
     return Ip_min, Ip_max, Iq_min, Iq_max
