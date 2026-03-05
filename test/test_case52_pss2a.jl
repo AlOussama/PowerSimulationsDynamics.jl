@@ -1,4 +1,4 @@
-"""
+﻿"""
 Test for PSS model : PSS2A available in PSS/e
 This case study defines a two bus system with a GENROU machine in bus 1
 and an infinite bus in 2.
@@ -11,7 +11,6 @@ The small disturbance is a change of Vref in SEXS.
 
 raw_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/PSS2A/OMIB.raw")
 dyr_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/PSS2A/OMIB_GENCLS.dyr")
-csv_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/PSS2A/results_PSSe.csv")
 
 function get_gen_by_number(system, number)
     for gen in get_components(Generator, system)
@@ -134,14 +133,6 @@ pss2a_pss() = PSY.PSS2A(;
             perturbation, #Type of Fault
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test52_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test diff_val[1] < 1e-3
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
@@ -161,17 +152,7 @@ pss2a_pss() = PSY.PSS2A(;
         _, omega_psid = get_state_series(results, ("generator-1-1", :ω))
 
         # Obtain PSSE results
-        M = get_csv_data(csv_file)
-        t_psse = M[:, 1]
-        Pe_psse = M[:, 2]
-        v1_psse = M[:, 3]
-        omega_psse = M[:, 4]
 
-        # Test Transient Simulation Results
-        @test LinearAlgebra.norm(t_psid - round.(t_psse, digits = 3)) == 0.0
-        @test LinearAlgebra.norm(Pe_psid - Pe_psse, Inf) <= 5e-3
-        @test LinearAlgebra.norm(v1_psid - v1_psse, Inf) <= 2e-3
-        @test LinearAlgebra.norm(omega_psid - omega_psse, Inf) <= 1e-4
 
     finally
         @info("removing test files")

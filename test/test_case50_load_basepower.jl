@@ -1,4 +1,4 @@
-"""
+﻿"""
 Test basepowers load models:
 Builds a OMIB system with a load. Tests that the active power flow
 across the single branch does not change when the base power of the

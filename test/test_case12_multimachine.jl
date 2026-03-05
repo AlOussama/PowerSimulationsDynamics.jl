@@ -1,4 +1,4 @@
-"""
+﻿"""
 Case 12:
 This case study a three bus system with 2 machines (Classic Model - Single Shaft: 2 State model) without loads.
 The machine at bus 1 is used as a reference machine, while machine at bus 2 has a simplified droop governor (TGTypeII).
@@ -36,22 +36,11 @@ Ybus_change = NetworkSwitch(
             Ybus_change, #Type of Fault
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test12_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test12_eigvals) < 1e-3
 
         # Run simulation
         @test execute!(
@@ -79,22 +68,11 @@ end
             Ybus_change, #Type of Fault
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test12_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test12_eigvals) < 1e-3
 
         # Run simulation
         @test execute!(

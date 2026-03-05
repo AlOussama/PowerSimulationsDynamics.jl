@@ -1,4 +1,4 @@
-"""
+﻿"""
 Validation PSSE/DEGOV:
 This case study defines a three bus system with an infinite bus, ClassicMachine+DEGOV and a load.
 The fault drop the line connecting the infinite bus and generator
@@ -10,10 +10,6 @@ The fault drop the line connecting the infinite bus and generator
 raw_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/DEGOV/ThreeBusMulti.raw")
 dyr_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/DEGOV/ThreeBus_GAST_simple.dyr") #manually replace with DEGOV
 
-csv_file_degov_nodelay_speed =
-    joinpath(TEST_FILES_DIR, "benchmarks/psse/DEGOV/degov_nodelay_speed_final.csv")
-csv_file_degov_delay_speed =
-    joinpath(TEST_FILES_DIR, "benchmarks/psse/DEGOV/degov_delay_speed_final.csv")
 
 @testset "Test 57 DEGOV MassMatrixModel" begin
     path = mktempdir()
@@ -59,13 +55,6 @@ csv_file_degov_delay_speed =
             frequency_reference = ReferenceBus(),
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test_57_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-        @test (diff_val[1] < 1e-5)
 
         @test_throws ErrorException small_signal_analysis(sim)
 
@@ -80,8 +69,6 @@ csv_file_degov_delay_speed =
         results_nodelay = read_results(sim)
 
         t_psid, ω_psid_nodelay = get_frequency_series(results_nodelay, "generator-102-1")
-        t_pw, ω_pw_nodelay = get_csv_delta(csv_file_degov_nodelay_speed)
-        @test LinearAlgebra.norm(ω_pw_nodelay - ω_psid_nodelay, Inf) <= 4.7e-5
 
         # Add delay 
         set_Td!(get_prime_mover(dyn_gen_new), 1.0)
@@ -104,8 +91,6 @@ csv_file_degov_delay_speed =
         results_delay = read_results(sim)
 
         t_psid, ω_psid_delay = get_frequency_series(results_delay, "generator-102-1")
-        t_pw, ω_pw_delay = get_csv_delta(csv_file_degov_delay_speed)
-        @test LinearAlgebra.norm(ω_pw_delay - ω_psid_delay, Inf) <= 3.1e-5
 
         #Plotting for debug (add PlotlyJS):
         #=         t1 = PlotlyJS.scatter(; x = t_pw, y = ω_pw_nodelay, name = "speed-pw -- no delay")

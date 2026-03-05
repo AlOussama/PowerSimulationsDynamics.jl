@@ -1,4 +1,4 @@
-"""
+﻿"""
 Case 28:
 This case studies a OMIB with a simple Periodic Variable Source with a single frequency component.
 There is no fault, however, the system is not in steady state due to the changing source.

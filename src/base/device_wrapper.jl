@@ -135,7 +135,7 @@ function DynamicWrapper(
 
     # Consider the special case when the static device is StandardLoad
     if isa(device, PSY.StandardLoad)
-        reactive_power = PF.get_total_q(device)
+        reactive_power = _get_total_q(device)
     else
         reactive_power = PSY.get_reactive_power(device)
     end

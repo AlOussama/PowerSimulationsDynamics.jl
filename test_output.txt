@@ -1,0 +1,1854 @@
+Precompiling project...
+   9666.3 ms  Ô£ô PowerSimulationsDynamics
+  1 dependency successfully precompiled in 13 seconds. 333 already precompiled.
+Test Summary: | Pass  Total  Time
+julia         |    1      1  0.0s
+Test Summary:                                                                                  | Pass  Total  Time
+Base.PkgId(Base.UUID("398b2ede-47ed-4edc-b52e-69e4a48b4336"), "PowerSimulationsDynamics") deps |    1      1  0.2s
+Test Summary:                                                                                    | Pass  Total  Time
+Base.PkgId(Base.UUID("398b2ede-47ed-4edc-b52e-69e4a48b4336"), "PowerSimulationsDynamics") extras |    1      1  0.0s
+Test Summary:                                                                                      | Pass  Total  Time
+Base.PkgId(Base.UUID("398b2ede-47ed-4edc-b52e-69e4a48b4336"), "PowerSimulationsDynamics") weakdeps |    1      1  0.0s
+
+test_base: Make Simulation: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:17
+  Got exception outside of a @test
+  MethodError: no method matching Ybus(::Vector{Line}, ::Vector{ACBus})
+  The type `Ybus` exists, but no method is defined for this combination of argument types when trying to construct it.
+  
+  Closest candidates are:
+    Ybus(!Matched::System; make_arc_admittance_matrices, network_reductions, include_constant_impedance_loads, subnetwork_algorithm)
+     @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:789
+    Ybus(!Matched::SparseArrays.SparseMatrixCSC{ComplexF32, Int64}, !Matched::SparseArrays.SparseMatrixCSC{Int8, Int64}, !Matched::Ax, !Matched::L, !Matched::Dict{Int64, Ax}, !Matched::Dict{Int64, Vector{Tuple{Int64, Int64}}}, !Matched::NetworkReductionData, !Matched::Union{Nothing, ArcAdmittanceMatrix}, !Matched::Union{Nothing, ArcAdmittanceMatrix}) where {Ax, L<:Tuple{Dict, Dict}}
+     @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:51
+  
+  Stacktrace:
+    [1] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:24 [inlined]
+    [2] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+    [3] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:18
+    [4] include
+      @ .\sysimg.jl:38 [inlined]
+    [5] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+    [6] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+    [7] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+    [8] macro expansion
+      @ .\timing.jl:581 [inlined]
+    [9] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+   [10] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+   [11] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+   [12] run_tests()
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+   [13] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+   [14] include(fname::String)
+      @ Main .\sysimg.jl:38
+   [15] top-level scope
+      @ none:1
+   [16] eval
+      @ .\boot.jl:430 [inlined]
+   [17] exec_options(opts::Base.JLOptions)
+      @ Base .\client.jl:296
+   [18] _start()
+      @ Base .\client.jl:531
+Solve Twice Simulation: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:105
+  Got exception outside of a @test
+  MethodError: no method matching Ybus(::Vector{Line}, ::Vector{ACBus})
+  The type `Ybus` exists, but no method is defined for this combination of argument types when trying to construct it.
+  
+  Closest candidates are:
+    Ybus(!Matched::System; make_arc_admittance_matrices, network_reductions, include_constant_impedance_loads, subnetwork_algorithm)
+     @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:789
+    Ybus(!Matched::SparseArrays.SparseMatrixCSC{ComplexF32, Int64}, !Matched::SparseArrays.SparseMatrixCSC{Int8, Int64}, !Matched::Ax, !Matched::L, !Matched::Dict{Int64, Ax}, !Matched::Dict{Int64, Vector{Tuple{Int64, Int64}}}, !Matched::NetworkReductionData, !Matched::Union{Nothing, ArcAdmittanceMatrix}, !Matched::Union{Nothing, ArcAdmittanceMatrix}) where {Ax, L<:Tuple{Dict, Dict}}
+     @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:51
+  
+  Stacktrace:
+    [1] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:112 [inlined]
+    [2] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+    [3] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:106
+    [4] include
+      @ .\sysimg.jl:38 [inlined]
+    [5] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+    [6] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+    [7] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+    [8] macro expansion
+      @ .\timing.jl:581 [inlined]
+    [9] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+   [10] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+   [11] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+   [12] run_tests()
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+   [13] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+   [14] include(fname::String)
+      @ Main .\sysimg.jl:38
+   [15] top-level scope
+      @ none:1
+   [16] eval
+      @ .\boot.jl:430 [inlined]
+   [17] exec_options(opts::Base.JLOptions)
+      @ Base .\client.jl:296
+   [18] _start()
+      @ Base .\client.jl:531
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{system_to_file::Bool, console_level::Base.CoreLogging.LogLevel, disable_timer_outputs::Bool})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{system_to_file::Bool, console_level::Base.CoreLogging.LogLevel, disable_timer_outputs::Bool}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{system_to_file::Bool, console_level::Base.CoreLogging.LogLevel, disable_timer_outputs::Bool}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{PowerSimulationsDynamics.Perturbation}; kwargs::@Kwargs{system_to_file::Bool, console_level::Base.CoreLogging.LogLevel, disable_timer_outputs::Bool})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:188
+Ôöé     [13] Simulation
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:166 [inlined]
+Ôöé     [14] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:147 [inlined]
+Ôöé     [15] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [16] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:144
+Ôöé     [17] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [18] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [19] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [22] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [23] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [24] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [25] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [26] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [27] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [28] top-level scope
+Ôöé        @ none:1
+Ôöé     [29] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [30] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [31] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Simulation kwargs: disable_timer_outputs: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:156
+  Expression: sim.status == PSID.BUILT
+   Evaluated: PowerSimulationsDynamics.BUILD_FAILED == PowerSimulationsDynamics.BUILT
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:156 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:144
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{PowerSimulationsDynamics.Perturbation}; kwargs::@Kwargs{console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:188
+Ôöé     [13] Simulation (repeats 2 times)
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:166 [inlined]
+Ôöé     [14] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:192 [inlined]
+Ôöé     [15] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [16] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:165
+Ôöé     [17] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [18] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [19] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [22] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [23] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [24] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [25] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [26] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [27] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [28] top-level scope
+Ôöé        @ none:1
+Ôöé     [29] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [30] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [31] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Hybrid Line Indexing: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:199
+  Expression: sim.status == PSID.BUILT
+   Evaluated: PowerSimulationsDynamics.BUILD_FAILED == PowerSimulationsDynamics.BUILT
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:199 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:165
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{PowerSimulationsDynamics.Perturbation}; kwargs::@Kwargs{console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:188
+Ôöé     [13] Simulation (repeats 2 times)
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:166 [inlined]
+Ôöé     [14] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:224 [inlined]
+Ôöé     [15] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [16] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:165
+Ôöé     [17] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [18] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [19] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [22] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [23] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [24] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [25] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [26] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [27] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [28] top-level scope
+Ôöé        @ none:1
+Ôöé     [29] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [30] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [31] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Hybrid Line Indexing: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:231
+  Expression: sim.status == PSID.BUILT
+   Evaluated: PowerSimulationsDynamics.BUILD_FAILED == PowerSimulationsDynamics.BUILT
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:231 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:165
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{BranchTrip}; kwargs::@Kwargs{console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:188
+Ôöé     [13] Simulation
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:166 [inlined]
+Ôöé     [14] #Simulation#108
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:78 [inlined]
+Ôöé     [15] Simulation
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:70 [inlined]
+Ôöé     [16] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:276 [inlined]
+Ôöé     [17] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [18] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:253
+Ôöé     [19] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [22] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [23] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [24] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [25] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [26] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [27] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [28] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [29] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [30] top-level scope
+Ôöé        @ none:1
+Ôöé     [31] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [32] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [33] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{BranchTrip}; kwargs::@Kwargs{console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:188
+Ôöé     [13] Simulation
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:166 [inlined]
+Ôöé     [14] #Simulation#108
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:78 [inlined]
+Ôöé     [15] Simulation
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:70 [inlined]
+Ôöé     [16] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:304 [inlined]
+Ôöé     [17] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [18] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:253
+Ôöé     [19] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [22] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [23] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [24] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [25] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [26] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [27] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [28] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [29] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [30] top-level scope
+Ôöé        @ none:1
+Ôöé     [31] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [32] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [33] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{initial_conditions::Vector{Float64}, console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{initial_conditions::Vector{Float64}, console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{initial_conditions::Vector{Float64}, console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{PowerSimulationsDynamics.Perturbation}; kwargs::@Kwargs{initial_conditions::Vector{Float64}, console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:188
+Ôöé     [13] Simulation (repeats 2 times)
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:166 [inlined]
+Ôöé     [14] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:314 [inlined]
+Ôöé     [15] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [16] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:253
+Ôöé     [17] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [18] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [19] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [22] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [23] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [24] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [25] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [26] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [27] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [28] top-level scope
+Ôöé        @ none:1
+Ôöé     [29] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [30] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [31] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{PowerSimulationsDynamics.Perturbation}; kwargs::@Kwargs{console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:188
+Ôöé     [13] Simulation (repeats 2 times)
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:166 [inlined]
+Ôöé     [14] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:555 [inlined]
+Ôöé     [15] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [16] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:528
+Ôöé     [17] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [18] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [19] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [22] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [23] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [24] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [25] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [26] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [27] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [28] top-level scope
+Ôöé        @ none:1
+Ôöé     [29] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [30] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [31] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{all_lines_dynamic::Bool, console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{all_lines_dynamic::Bool, console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{all_lines_dynamic::Bool, console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{PowerSimulationsDynamics.Perturbation}; kwargs::@Kwargs{all_lines_dynamic::Bool, console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:188
+Ôöé     [13] Simulation
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:166 [inlined]
+Ôöé     [14] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:625 [inlined]
+Ôöé     [15] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [16] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:624
+Ôöé     [17] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [18] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [19] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [22] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [23] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [24] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [25] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [26] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [27] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [28] top-level scope
+Ôöé        @ none:1
+Ôöé     [29] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [30] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [31] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Line and Branch transformation: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:633
+  Expression: sim.status == PSID.BUILT
+   Evaluated: PowerSimulationsDynamics.BUILD_FAILED == PowerSimulationsDynamics.BUILT
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:633 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:624
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{all_branches_dynamic::Bool, console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{all_branches_dynamic::Bool, console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{all_branches_dynamic::Bool, console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{PowerSimulationsDynamics.Perturbation}; kwargs::@Kwargs{all_branches_dynamic::Bool, console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:188
+Ôöé     [13] Simulation
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:166 [inlined]
+Ôöé     [14] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:638 [inlined]
+Ôöé     [15] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [16] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:624
+Ôöé     [17] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [18] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [19] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [22] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [23] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [24] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [25] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [26] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [27] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [28] top-level scope
+Ôöé        @ none:1
+Ôöé     [29] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [30] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [31] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Line and Branch transformation: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:646
+  Expression: sim.status == PSID.BUILT
+   Evaluated: PowerSimulationsDynamics.BUILD_FAILED == PowerSimulationsDynamics.BUILT
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:646 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:624
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{all_lines_dynamic::Bool, console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{all_lines_dynamic::Bool, console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{all_lines_dynamic::Bool, console_level::Base.CoreLogging.LogLevel}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation!(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{PowerSimulationsDynamics.Perturbation}; kwargs::@Kwargs{all_lines_dynamic::Bool, console_level::Base.CoreLogging.LogLevel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:131
+Ôöé     [13] Simulation!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:109 [inlined]
+Ôöé     [14] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:651 [inlined]
+Ôöé     [15] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [16] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:624
+Ôöé     [17] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [18] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [19] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [22] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [23] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [24] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [25] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [26] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [27] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [28] top-level scope
+Ôöé        @ none:1
+Ôöé     [29] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [30] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [31] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Line and Branch transformation: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:659
+  Expression: sim.status == PSID.BUILT
+   Evaluated: PowerSimulationsDynamics.BUILD_FAILED == PowerSimulationsDynamics.BUILT
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:659 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:624
+Jacobian: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:670
+  Expression: get_jacobian(model_type, omib_sys_copy, -1)
+    Expected: InfrastructureSystems.ConflictingInputsError
+      Thrown: MethodError
+      MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+      The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+      
+      Closest candidates are:
+        ACPowerFlow(; kwargs...)
+         @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+      
+      Stacktrace:
+       [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+         @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+       [2] set_operating_point!(x0_init::Vector{Float64}, inputs::PowerSimulationsDynamics.SimulationInputs, system::System)
+         @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:249
+       [3] get_jacobian(::Type{ResidualModel}, system::System, sparse_retrieve_loop::Int64)
+         @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\jacobian.jl:246
+       [4] macro expansion
+         @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:670 [inlined]
+       [5] macro expansion
+         @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:773 [inlined]
+       [6] macro expansion
+         @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:670 [inlined]
+       [7] macro expansion
+         @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+       [8] top-level scope
+         @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:668
+
+Stacktrace:
+ [1] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:670 [inlined]
+ [2] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [3] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:668
+Jacobian: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:667
+  Got exception outside of a @test
+  MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+  The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+  
+  Closest candidates are:
+    ACPowerFlow(; kwargs...)
+     @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+  
+  Stacktrace:
+    [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+    [2] set_operating_point!(x0_init::Vector{Float64}, inputs::PowerSimulationsDynamics.SimulationInputs, system::System)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:249
+    [3] get_jacobian(::Type{ResidualModel}, system::System, sparse_retrieve_loop::Int64)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\jacobian.jl:246
+    [4] get_jacobian(::Type{ResidualModel}, system::System)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\jacobian.jl:243
+    [5] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:671 [inlined]
+    [6] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+    [7] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:668
+    [8] include
+      @ .\sysimg.jl:38 [inlined]
+    [9] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+   [10] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+   [11] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+   [12] macro expansion
+      @ .\timing.jl:581 [inlined]
+   [13] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+   [14] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+   [15] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+   [16] run_tests()
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+   [17] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+   [18] include(fname::String)
+      @ Main .\sysimg.jl:38
+   [19] top-level scope
+      @ none:1
+   [20] eval
+      @ .\boot.jl:430 [inlined]
+   [21] exec_options(opts::Base.JLOptions)
+      @ Base .\client.jl:296
+   [22] _start()
+      @ Base .\client.jl:531
+Jacobian with Delays: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:700
+  Expression: get_jacobian(model_type, omib_sys_copy, -1)
+    Expected: InfrastructureSystems.ConflictingInputsError
+      Thrown: MethodError
+      MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+      The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+      
+      Closest candidates are:
+        ACPowerFlow(; kwargs...)
+         @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+      
+      Stacktrace:
+       [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+         @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+       [2] set_operating_point!(x0_init::Vector{Float64}, inputs::PowerSimulationsDynamics.SimulationInputs, system::System)
+         @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:249
+       [3] get_jacobian(::Type{MassMatrixModel}, system::System, sparse_retrieve_loop::Int64)
+         @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\jacobian.jl:246
+       [4] macro expansion
+         @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:700 [inlined]
+       [5] macro expansion
+         @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:773 [inlined]
+       [6] macro expansion
+         @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:700 [inlined]
+       [7] macro expansion
+         @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+       [8] top-level scope
+         @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:696
+
+Stacktrace:
+ [1] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:700 [inlined]
+ [2] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [3] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:696
+Jacobian with Delays: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:695
+  Got exception outside of a @test
+  MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+  The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+  
+  Closest candidates are:
+    ACPowerFlow(; kwargs...)
+     @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+  
+  Stacktrace:
+    [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+    [2] set_operating_point!(x0_init::Vector{Float64}, inputs::PowerSimulationsDynamics.SimulationInputs, system::System)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:249
+    [3] get_jacobian(::Type{MassMatrixModel}, system::System, sparse_retrieve_loop::Int64)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\jacobian.jl:246
+    [4] get_jacobian(::Type{MassMatrixModel}, system::System)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\jacobian.jl:243
+    [5] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:702 [inlined]
+    [6] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+    [7] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:696
+    [8] include
+      @ .\sysimg.jl:38 [inlined]
+    [9] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+   [10] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+   [11] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+   [12] macro expansion
+      @ .\timing.jl:581 [inlined]
+   [13] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+   [14] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+   [15] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+   [16] run_tests()
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+   [17] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+   [18] include(fname::String)
+      @ Main .\sysimg.jl:38
+   [19] top-level scope
+      @ none:1
+   [20] eval
+      @ .\boot.jl:430 [inlined]
+   [21] exec_options(opts::Base.JLOptions)
+      @ Base .\client.jl:296
+   [22] _start()
+      @ Base .\client.jl:531
+Test 01 OMIB ResidualModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:713
+  Got exception outside of a @test
+  MethodError: no method matching Ybus(::Vector{Line}, ::Vector{ACBus})
+  The type `Ybus` exists, but no method is defined for this combination of argument types when trying to construct it.
+  
+  Closest candidates are:
+    Ybus(!Matched::System; make_arc_admittance_matrices, network_reductions, include_constant_impedance_loads, subnetwork_algorithm)
+     @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:789
+    Ybus(!Matched::SparseArrays.SparseMatrixCSC{ComplexF32, Int64}, !Matched::SparseArrays.SparseMatrixCSC{Int8, Int64}, !Matched::Ax, !Matched::L, !Matched::Dict{Int64, Ax}, !Matched::Dict{Int64, Vector{Tuple{Int64, Int64}}}, !Matched::NetworkReductionData, !Matched::Union{Nothing, ArcAdmittanceMatrix}, !Matched::Union{Nothing, ArcAdmittanceMatrix}) where {Ax, L<:Tuple{Dict, Dict}}
+     @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:51
+  
+  Stacktrace:
+    [1] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:720 [inlined]
+    [2] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+    [3] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_base.jl:714
+    [4] include
+      @ .\sysimg.jl:38 [inlined]
+    [5] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+    [6] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+    [7] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+    [8] macro expansion
+      @ .\timing.jl:581 [inlined]
+    [9] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+   [10] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+   [11] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+   [12] run_tests()
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+   [13] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+   [14] include(fname::String)
+      @ Main .\sysimg.jl:38
+   [15] top-level scope
+      @ none:1
+   [16] eval
+      @ .\boot.jl:430 [inlined]
+   [17] exec_options(opts::Base.JLOptions)
+      @ Base .\client.jl:296
+   [18] _start()
+      @ Base .\client.jl:531
+
+Ôöî Warning: Setting the system unit base from DEVICE_BASE to SYSTEM_BASE for matrix construction
+Ôöö @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:798
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation!(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{NetworkSwitch}; kwargs::@Kwargs{})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:131
+Ôöé     [13] Simulation!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:109 [inlined]
+Ôöé     [14] #Simulation!#107
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:67 [inlined]
+Ôöé     [15] Simulation!(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbation::NetworkSwitch)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:59
+Ôöé     [16] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:30 [inlined]
+Ôöé     [17] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [18] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:27
+Ôöé     [19] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [22] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [23] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [24] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [25] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [26] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [27] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [28] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [29] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [30] top-level scope
+Ôöé        @ none:1
+Ôöé     [31] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [32] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [33] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+test_case10_staticbranches: Test 10 Static Branches ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:44
+  Expression: diff_val[1] < 0.001
+   Evaluated: 4.776972153678157 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:44 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:27
+Test 10 Static Branches ResidualModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:26
+  Got exception outside of a @test
+  ArgumentError: matrix contains Infs or NaNs
+  Stacktrace:
+    [1] chkfinite
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\lapack.jl:105 [inlined]
+    [2] geevx!(balanc::Char, jobvl::Char, jobvr::Char, sense::Char, A::Matrix{Float64})
+      @ LinearAlgebra.LAPACK C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\lapack.jl:2129
+    [3] eigen!(A::Matrix{Float64}; permute::Bool, scale::Bool, sortby::typeof(LinearAlgebra.eigsortby))
+      @ LinearAlgebra C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:153
+    [4] _eigen(A::Matrix{Float64}; permute::Bool, scale::Bool, sortby::Function)
+      @ LinearAlgebra C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:252
+    [5] _eigen
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:247 [inlined]
+    [6] #eigen#94
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:239 [inlined]
+    [7] eigen
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:238 [inlined]
+    [8] _get_eigenvalues(reduced_jacobian::Matrix{Float64}, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:109
+    [9] _small_signal_analysis(jacobian::Matrix{Float64}, x_eval::Vector{Float64}, inputs::PowerSimulationsDynamics.SimulationInputs, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:168
+   [10] _small_signal_analysis(::Type{ResidualModel}, inputs::PowerSimulationsDynamics.SimulationInputs, x_eval::Vector{Float64}, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:191
+   [11] small_signal_analysis(sim::Simulation{ResidualModel}; kwargs::@Kwargs{})
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:210
+   [12] small_signal_analysis(sim::Simulation{ResidualModel})
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:204
+   [13] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:47 [inlined]
+   [14] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+   [15] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:27
+   [16] include
+      @ .\sysimg.jl:38 [inlined]
+   [17] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+   [18] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+   [19] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+   [20] macro expansion
+      @ .\timing.jl:581 [inlined]
+   [21] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+   [22] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+   [23] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+   [24] run_tests()
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+   [25] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+   [26] include(fname::String)
+      @ Main .\sysimg.jl:38
+   [27] top-level scope
+      @ none:1
+   [28] eval
+      @ .\boot.jl:430 [inlined]
+   [29] exec_options(opts::Base.JLOptions)
+      @ Base .\client.jl:296
+   [30] _start()
+      @ Base .\client.jl:531
+Ôöî Warning: Setting the system unit base from DEVICE_BASE to SYSTEM_BASE for matrix construction
+Ôöö @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:798
+Ôöî Error: MassMatrixModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{MassMatrixModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{MassMatrixModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{MassMatrixModel}; kwargs::@Kwargs{})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{}, Simulation{MassMatrixModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{}, Simulation{MassMatrixModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation!(::Type{MassMatrixModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{NetworkSwitch}; kwargs::@Kwargs{})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:131
+Ôöé     [13] Simulation!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:109 [inlined]
+Ôöé     [14] #Simulation!#107
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:67 [inlined]
+Ôöé     [15] Simulation!(::Type{MassMatrixModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbation::NetworkSwitch)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:59
+Ôöé     [16] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:76 [inlined]
+Ôöé     [17] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [18] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:73
+Ôöé     [19] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [22] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [23] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [24] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [25] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [26] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [27] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [28] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [29] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [30] top-level scope
+Ôöé        @ none:1
+Ôöé     [31] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [32] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [33] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Test 10 Static Branches MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:90
+  Expression: diff_val[1] < 0.001
+   Evaluated: 4.776972153678157 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:90 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:73
+Test 10 Static Branches MassMatrixModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:72
+  Got exception outside of a @test
+  ArgumentError: matrix contains Infs or NaNs
+  Stacktrace:
+    [1] chkfinite
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\lapack.jl:105 [inlined]
+    [2] geevx!(balanc::Char, jobvl::Char, jobvr::Char, sense::Char, A::Matrix{Float64})
+      @ LinearAlgebra.LAPACK C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\lapack.jl:2129
+    [3] eigen!(A::Matrix{Float64}; permute::Bool, scale::Bool, sortby::typeof(LinearAlgebra.eigsortby))
+      @ LinearAlgebra C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:153
+    [4] _eigen(A::Matrix{Float64}; permute::Bool, scale::Bool, sortby::Function)
+      @ LinearAlgebra C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:252
+    [5] _eigen
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:247 [inlined]
+    [6] #eigen#94
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:239 [inlined]
+    [7] eigen
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:238 [inlined]
+    [8] _get_eigenvalues(reduced_jacobian::Matrix{Float64}, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:109
+    [9] _small_signal_analysis(jacobian::Matrix{Float64}, x_eval::Vector{Float64}, inputs::PowerSimulationsDynamics.SimulationInputs, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:168
+   [10] _small_signal_analysis(::Type{MassMatrixModel}, inputs::PowerSimulationsDynamics.SimulationInputs, x_eval::Vector{Float64}, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:191
+   [11] small_signal_analysis(sim::Simulation{MassMatrixModel}; kwargs::@Kwargs{})
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:210
+   [12] small_signal_analysis(sim::Simulation{MassMatrixModel})
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:204
+   [13] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:93 [inlined]
+   [14] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+   [15] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:73
+   [16] include
+      @ .\sysimg.jl:38 [inlined]
+   [17] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+   [18] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+   [19] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+   [20] macro expansion
+      @ .\timing.jl:581 [inlined]
+   [21] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+   [22] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+   [23] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+   [24] run_tests()
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+   [25] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+   [26] include(fname::String)
+      @ Main .\sysimg.jl:38
+   [27] top-level scope
+      @ none:1
+   [28] eval
+      @ .\boot.jl:430 [inlined]
+   [29] exec_options(opts::Base.JLOptions)
+      @ Base .\client.jl:296
+   [30] _start()
+      @ Base .\client.jl:531
+
+Ôöî Warning: Setting the system unit base from DEVICE_BASE to SYSTEM_BASE for matrix construction
+Ôöö @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:798
+Ôöî Error: ResidualModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{ResidualModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{ResidualModel}; kwargs::@Kwargs{})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{}, Simulation{ResidualModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{}, Simulation{ResidualModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation!(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{NetworkSwitch}; kwargs::@Kwargs{})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:131
+Ôöé     [13] Simulation!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:109 [inlined]
+Ôöé     [14] #Simulation!#107
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:67 [inlined]
+Ôöé     [15] Simulation!(::Type{ResidualModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbation::NetworkSwitch)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:59
+Ôöé     [16] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:30 [inlined]
+Ôöé     [17] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [18] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:27
+Ôöé     [19] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [22] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [23] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [24] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [25] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [26] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [27] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [28] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [29] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [30] top-level scope
+Ôöé        @ none:1
+Ôöé     [31] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [32] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [33] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+test_case11_dynbranches: Test 11 Dynamic Branches ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:46
+  Expression: diff_val[1] < 0.001
+   Evaluated: 4.776972153678157 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:46 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:27
+Test 11 Dynamic Branches ResidualModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:26
+  Got exception outside of a @test
+  ArgumentError: matrix contains Infs or NaNs
+  Stacktrace:
+    [1] chkfinite
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\lapack.jl:105 [inlined]
+    [2] geevx!(balanc::Char, jobvl::Char, jobvr::Char, sense::Char, A::Matrix{Float64})
+      @ LinearAlgebra.LAPACK C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\lapack.jl:2129
+    [3] eigen!(A::Matrix{Float64}; permute::Bool, scale::Bool, sortby::typeof(LinearAlgebra.eigsortby))
+      @ LinearAlgebra C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:153
+    [4] _eigen(A::Matrix{Float64}; permute::Bool, scale::Bool, sortby::Function)
+      @ LinearAlgebra C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:252
+    [5] _eigen
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:247 [inlined]
+    [6] #eigen#94
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:239 [inlined]
+    [7] eigen
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:238 [inlined]
+    [8] _get_eigenvalues(reduced_jacobian::Matrix{Float64}, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:109
+    [9] _small_signal_analysis(jacobian::Matrix{Float64}, x_eval::Vector{Float64}, inputs::PowerSimulationsDynamics.SimulationInputs, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:168
+   [10] _small_signal_analysis(::Type{ResidualModel}, inputs::PowerSimulationsDynamics.SimulationInputs, x_eval::Vector{Float64}, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:191
+   [11] small_signal_analysis(sim::Simulation{ResidualModel}; kwargs::@Kwargs{})
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:210
+   [12] small_signal_analysis(sim::Simulation{ResidualModel})
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:204
+   [13] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:49 [inlined]
+   [14] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+   [15] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:27
+   [16] include
+      @ .\sysimg.jl:38 [inlined]
+   [17] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+   [18] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+   [19] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+   [20] macro expansion
+      @ .\timing.jl:581 [inlined]
+   [21] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+   [22] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+   [23] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+   [24] run_tests()
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+   [25] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+   [26] include(fname::String)
+      @ Main .\sysimg.jl:38
+   [27] top-level scope
+      @ none:1
+   [28] eval
+      @ .\boot.jl:430 [inlined]
+   [29] exec_options(opts::Base.JLOptions)
+      @ Base .\client.jl:296
+   [30] _start()
+      @ Base .\client.jl:531
+Ôöî Warning: Setting the system unit base from DEVICE_BASE to SYSTEM_BASE for matrix construction
+Ôöö @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:798
+Ôöî Error: MassMatrixModel failed to build
+Ôöé   exception =
+Ôöé    MethodError: no method matching ACPowerFlow(::Type{TrustRegionACPowerFlow})
+Ôöé    The type `ACPowerFlow` exists, but no method is defined for this combination of argument types when trying to construct it.
+Ôöé    
+Ôöé    Closest candidates are:
+Ôöé      ACPowerFlow(; kwargs...)
+Ôöé       @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\power_flow_types.jl:188
+Ôöé    
+Ôöé    Stacktrace:
+Ôöé      [1] power_flow_solution!(initial_guess::Vector{Float64}, sys::System, inputs::PowerSimulationsDynamics.SimulationInputs)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:14
+Ôöé      [2] _calculate_initial_guess!(x0_init::Vector{Float64}, sim::Simulation{MassMatrixModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:164
+Ôöé      [3] precalculate_initial_conditions!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation_initialization.jl:185 [inlined]
+Ôöé      [4] _pre_initialize_simulation!(sim::Simulation{MassMatrixModel})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:266
+Ôöé      [5] _build!(sim::Simulation{MassMatrixModel}; kwargs::@Kwargs{})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:443
+Ôöé      [6] _build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:412 [inlined]
+Ôöé      [7] (::PowerSimulationsDynamics.var"#125#126"{@Kwargs{}, Simulation{MassMatrixModel}})()
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:478
+Ôöé      [8] with_logstate(f::PowerSimulationsDynamics.var"#125#126"{@Kwargs{}, Simulation{MassMatrixModel}}, logstate::Base.CoreLogging.LogState)
+Ôöé        @ Base.CoreLogging .\logging\logging.jl:522
+Ôöé      [9] with_logger
+Ôöé        @ .\logging\logging.jl:632 [inlined]
+Ôöé     [10] #build!#124
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:477 [inlined]
+Ôöé     [11] build!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:475 [inlined]
+Ôöé     [12] Simulation!(::Type{MassMatrixModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbations::Vector{NetworkSwitch}; kwargs::@Kwargs{})
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:131
+Ôöé     [13] Simulation!
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:109 [inlined]
+Ôöé     [14] #Simulation!#107
+Ôöé        @ d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:67 [inlined]
+Ôöé     [15] Simulation!(::Type{MassMatrixModel}, system::System, simulation_folder::String, tspan::Tuple{Float64, Float64}, perturbation::NetworkSwitch)
+Ôöé        @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:59
+Ôöé     [16] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:72 [inlined]
+Ôöé     [17] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [18] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:69
+Ôöé     [19] include
+Ôöé        @ .\sysimg.jl:38 [inlined]
+Ôöé     [20] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+Ôöé     [21] macro expansion
+Ôöé        @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+Ôöé     [22] macro expansion
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+Ôöé     [23] macro expansion
+Ôöé        @ .\timing.jl:581 [inlined]
+Ôöé     [24] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+Ôöé     [25] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+Ôöé     [26] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+Ôöé        @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+Ôöé     [27] run_tests()
+Ôöé        @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+Ôöé     [28] top-level scope
+Ôöé        @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+Ôöé     [29] include(fname::String)
+Ôöé        @ Main .\sysimg.jl:38
+Ôöé     [30] top-level scope
+Ôöé        @ none:1
+Ôöé     [31] eval
+Ôöé        @ .\boot.jl:430 [inlined]
+Ôöé     [32] exec_options(opts::Base.JLOptions)
+Ôöé        @ Base .\client.jl:296
+Ôöé     [33] _start()
+Ôöé        @ Base .\client.jl:531
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\simulation.jl:468
+Test 11 Dynamic Branches MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:86
+  Expression: diff_val[1] < 0.001
+   Evaluated: 4.776972153678157 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:86 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:69
+Test 11 Dynamic Branches MassMatrixModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:68
+  Got exception outside of a @test
+  ArgumentError: matrix contains Infs or NaNs
+  Stacktrace:
+    [1] chkfinite
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\lapack.jl:105 [inlined]
+    [2] geevx!(balanc::Char, jobvl::Char, jobvr::Char, sense::Char, A::Matrix{Float64})
+      @ LinearAlgebra.LAPACK C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\lapack.jl:2129
+    [3] eigen!(A::Matrix{Float64}; permute::Bool, scale::Bool, sortby::typeof(LinearAlgebra.eigsortby))
+      @ LinearAlgebra C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:153
+    [4] _eigen(A::Matrix{Float64}; permute::Bool, scale::Bool, sortby::Function)
+      @ LinearAlgebra C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:252
+    [5] _eigen
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:247 [inlined]
+    [6] #eigen#94
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:239 [inlined]
+    [7] eigen
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\LinearAlgebra\src\eigen.jl:238 [inlined]
+    [8] _get_eigenvalues(reduced_jacobian::Matrix{Float64}, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:109
+    [9] _small_signal_analysis(jacobian::Matrix{Float64}, x_eval::Vector{Float64}, inputs::PowerSimulationsDynamics.SimulationInputs, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:168
+   [10] _small_signal_analysis(::Type{MassMatrixModel}, inputs::PowerSimulationsDynamics.SimulationInputs, x_eval::Vector{Float64}, multimachine::Bool)
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:191
+   [11] small_signal_analysis(sim::Simulation{MassMatrixModel}; kwargs::@Kwargs{})
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:210
+   [12] small_signal_analysis(sim::Simulation{MassMatrixModel})
+      @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\small_signal.jl:204
+   [13] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:89 [inlined]
+   [14] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+   [15] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:69
+   [16] include
+      @ .\sysimg.jl:38 [inlined]
+   [17] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+   [18] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+   [19] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+   [20] macro expansion
+      @ .\timing.jl:581 [inlined]
+   [21] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+   [22] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+   [23] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+   [24] run_tests()
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+   [25] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+   [26] include(fname::String)
+      @ Main .\sysimg.jl:38
+   [27] top-level scope
+      @ none:1
+   [28] eval
+      @ .\boot.jl:430 [inlined]
+   [29] exec_options(opts::Base.JLOptions)
+      @ Base .\client.jl:296
+   [30] _start()
+      @ Base .\client.jl:531
+
+test_case12_multimachine: Begin PowerSimulationsDynamics tests: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+  Got exception outside of a @test
+  LoadError: MethodError: no method matching Ybus(::Vector{Branch}, ::Vector{ACBus})
+  The type `Ybus` exists, but no method is defined for this combination of argument types when trying to construct it.
+  
+  Closest candidates are:
+    Ybus(!Matched::System; make_arc_admittance_matrices, network_reductions, include_constant_impedance_loads, subnetwork_algorithm)
+     @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:789
+    Ybus(!Matched::SparseArrays.SparseMatrixCSC{ComplexF32, Int64}, !Matched::SparseArrays.SparseMatrixCSC{Int8, Int64}, !Matched::Ax, !Matched::L, !Matched::Dict{Int64, Ax}, !Matched::Dict{Int64, Vector{Tuple{Int64, Int64}}}, !Matched::NetworkReductionData, !Matched::Union{Nothing, ArcAdmittanceMatrix}, !Matched::Union{Nothing, ArcAdmittanceMatrix}) where {Ax, L<:Tuple{Dict, Dict}}
+     @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:51
+  
+  Stacktrace:
+    [1] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\data_tests\test12.jl:57
+    [2] include(fname::String)
+      @ Main .\sysimg.jl:38
+    [3] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case12_multimachine.jl:12
+    [4] include
+      @ .\sysimg.jl:38 [inlined]
+    [5] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+    [6] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+    [7] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+    [8] macro expansion
+      @ .\timing.jl:581 [inlined]
+    [9] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+   [10] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+   [11] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+   [12] run_tests()
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+   [13] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+   [14] include(fname::String)
+      @ Main .\sysimg.jl:38
+   [15] top-level scope
+      @ none:1
+   [16] eval
+      @ .\boot.jl:430 [inlined]
+   [17] exec_options(opts::Base.JLOptions)
+      @ Base .\client.jl:296
+   [18] _start()
+      @ Base .\client.jl:531
+  in expression starting at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\data_tests\test12.jl:57
+  in expression starting at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case12_multimachine.jl:12
+Test Summary:                                    | Pass  Fail  Error  Total     Time
+Begin PowerSimulationsDynamics tests             |  229    12     10    251  3m12.8s
+  Prog meter enabling                            |    1                   1     0.0s
+  Make Simulation                                |                 1      1     4.7s
+  Solve Twice Simulation                         |                 1      1     0.1s
+  Simulation kwargs: disable_timer_outputs       |          1             1    17.4s
+  Hybrid Line Indexing                           |   87     2            89     5.8s
+  Test initial conditions externally             |    5                   5    18.6s
+  Test Network Kirchoff Calculation              |    4                   4     0.0s
+  Test Network Modification Callback Affects     |  109                 109     0.2s
+  Test Generation perturbations callback affects |    4                   4     0.5s
+  Test Load perturbations callback affects       |    3                   3     0.6s
+  Global Index                                   |    5                   5     0.2s
+  Frequency Reference                            |    2                   2    45.7s
+  Line and Branch transformation                 |    8     3            11     1.4s
+  Jacobian                                       |          1      1      2     0.2s
+  Jacobian with Delays                           |          1      1      2     1.1s
+  Test 01 OMIB ResidualModel                     |                 1      1     0.1s
+  Test 01 OMIB AVR Error                         |    1                   1     0.5s
+  Test 10 Static Branches ResidualModel          |          1      1      2     8.1s
+  Test 10 Static Branches MassMatrixModel        |          1      1      2     4.9s
+  Test 11 Dynamic Branches ResidualModel         |          1      1      2     1.4s
+  Test 11 Dynamic Branches MassMatrixModel       |          1      1      2     3.9s
+ERROR: LoadError: Some tests did not pass: 229 passed, 12 failed, 10 errored, 0 broken.
+in expression starting at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:130

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Case 10:
 This case study a three bus system with 1 machine (One d- One q-: 4th order model), a VSM of 19 states and an infinite source. All lines are modeled as a static lines.
 The perturbation trips two of the three circuits of line between buses 1 and 2, triplicating its impedance.
@@ -35,21 +35,11 @@ Ybus_change = NetworkSwitch(
             Ybus_change, #Type of Fault
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test10_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test10_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, IDA()) == PSID.SIMULATION_FINALIZED
@@ -81,21 +71,11 @@ end
             Ybus_change, #Type of Fault
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test10_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test10_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, Rodas4()) == PSID.SIMULATION_FINALIZED

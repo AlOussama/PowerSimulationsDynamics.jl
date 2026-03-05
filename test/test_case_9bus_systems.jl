@@ -1,4 +1,4 @@
-@testset "Test 32 9-Bus Machine Only System" begin
+﻿@testset "Test 32 9-Bus Machine Only System" begin
     path = mktempdir()
     try
         sys = build_system(PSIDTestSystems, "psid_test_ieee_9bus")

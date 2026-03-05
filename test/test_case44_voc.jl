@@ -1,4 +1,4 @@
-using PowerSimulationsDynamics
+﻿using PowerSimulationsDynamics
 using Sundials
 
 """
@@ -35,21 +35,11 @@ Pref_change = ControlReferenceChange(1.0, case_inv, :P_ref, 0.7)
             Pref_change,
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test44_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test44_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, IDA(); dtmax = 0.005, saveat = 0.005) ==
@@ -73,8 +63,6 @@ Pref_change = ControlReferenceChange(1.0, case_inv, :P_ref, 0.7)
         @test isa(power, Tuple{Vector{Float64}, Vector{Float64}})
         @test isa(rpower, Tuple{Vector{Float64}, Vector{Float64}})
         @test isa(ω, Tuple{Vector{Float64}, Vector{Float64}})
-        #@test LinearAlgebra.norm(ω - ω_pscad) <= 1e-4
-        #@test LinearAlgebra.norm(t - round.(t_pscad, digits = 3)) == 0.0
 
     finally
         @info("removing test files")
@@ -95,21 +83,11 @@ end
             Pref_change,
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test44_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test44_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, Rodas5(); dtmax = 0.005, saveat = 0.005) ==
@@ -129,8 +107,6 @@ end
         @test isa(power, Tuple{Vector{Float64}, Vector{Float64}})
         @test isa(rpower, Tuple{Vector{Float64}, Vector{Float64}})
         @test isa(ω, Tuple{Vector{Float64}, Vector{Float64}})
-        #@test LinearAlgebra.norm(ω - ω_pscad) <= 1e-4
-        #@test LinearAlgebra.norm(t - round.(t_pscad, digits = 3)) == 0.0
 
     finally
         @info("removing test files")

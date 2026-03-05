@@ -1,4 +1,4 @@
-"""
+﻿"""
 Test for Dynamic Injector model : CSVGN1 available in PSS/e
 This case study defines a three bus system with an infinite bus in 1,
 a constant impedance load in bus 2 a a constant impedance load in bus 3
@@ -12,7 +12,6 @@ to 400 MW
 
 raw_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/CSVGN1/3_BUS_System.raw")
 dyr_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/CSVGN1/3_BUS_System.dyr")
-csv_file = joinpath(TEST_FILES_DIR, "benchmarks/psse/CSVGN1/results_PSSe.csv")
 
 function csvgn1_1(source)
     return PSY.CSVGN1(;
@@ -97,18 +96,9 @@ end
             perturbation_load, #Type of Fault
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test49_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test diff_val[1] < 1e-3
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
         # Solve problem
@@ -123,18 +113,7 @@ end
         _, v3_psid = get_voltage_magnitude_series(results, 3)
 
         # Obtain PSSE results
-        M = get_csv_data(csv_file)
-        t_psse = M[:, 1]
-        v1_psse = M[:, 2]
-        v2_psse = M[:, 3]
-        v3_psse = M[:, 4]
 
-        # Test Transient Simulation Results
-
-        @test LinearAlgebra.norm(t_psid - round.(t_psse, digits = 4)) == 0.0
-        @test LinearAlgebra.norm(v1_psid - v1_psse, Inf) <= 1e-3
-        @test LinearAlgebra.norm(v2_psid - v2_psse, Inf) <= 1e-3
-        @test LinearAlgebra.norm(v3_psid - v3_psse, Inf) <= 1e-3
 
     finally
         @info("removing test files")

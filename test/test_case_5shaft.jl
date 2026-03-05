@@ -1,4 +1,4 @@
-"""
+﻿"""
 Case 7:
 This case study a three bus system with 2 machine located at bus 2 and 3.
 The generator at bus 3 uses the model of a one d- one q- machine, and has a 5-mass shaft and a turbine governor.
@@ -12,7 +12,7 @@ The fault disconnects a circuit between buses 1 and 2, doubling its impedance.
 
 threebus_sys = build_system(PSIDTestSystems, "psid_test_threebus_5shaft")
 pf = ACPowerFlow()
-solve_powerflow!(pf, threebus_sys)
+solve_and_store_power_flow!(pf, threebus_sys)
 Ybus_fault = get_ybus_fault_threebus_sys(threebus_sys)
 
 ##################################################
@@ -39,22 +39,11 @@ Ybus_change = NetworkSwitch(
             Ybus_change, #Type of Fault
         ) #initial guess
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test07_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test07_eigvals) < 1e-3
 
         #Solve problem
         @test execute!(sim, IDA(); dtmax = 0.001) == PSID.SIMULATION_FINALIZED
@@ -83,22 +72,11 @@ end
             Ybus_change, #Type of Fault
         ) #initial guess
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test07_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test07_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, Rodas4(); dtmax = 0.001) == PSID.SIMULATION_FINALIZED

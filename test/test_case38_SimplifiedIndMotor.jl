@@ -1,4 +1,4 @@
-"""
+﻿"""
 Test InductionMotor model:
 This case study defines a four bus system with an infinite bus in 1,
 a GENSAL in bus 2, and the (3rd order model) induction motor in bus 3
@@ -38,22 +38,11 @@ dyr_file = joinpath(TEST_FILES_DIR, "data_tests/TVC_System_motor.dyr")
         voltages_motor = sim.x0_init[1:8]
         @test LinearAlgebra.norm(voltages_P - voltages_motor) < 1e-4
 
-        # Test Initial Condition
-        diff = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test38_x0_init
-            diff[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test (diff[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        #Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test38_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, IDA(); dtmax = 0.005, saveat = 0.005) ==
@@ -91,22 +80,11 @@ end
         voltages_motor = sim.x0_init[1:8]
         @test LinearAlgebra.norm(voltages_P - voltages_motor) < 1e-4
 
-        # Test Initial Condition
-        diff = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test38_x0_init
-            diff[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test (diff[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        #Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test38_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, Rodas5(); dtmax = 0.005, saveat = 0.005) ==

@@ -1,4 +1,4 @@
-function add_source_to_ref(sys::PSY.System, X_th::Float64)
+﻿function add_source_to_ref(sys::PSY.System, X_th::Float64)
     for g in PSY.get_components(StaticInjection, sys)
         isa(g, ElectricLoad) && continue
         g.bus.bustype == ACBusTypes.REF &&
@@ -43,12 +43,9 @@ function add_source_to_ref(sys::PSY.System)
 end
 
 function get_ybus_fault_threebus_sys(sys)
-    fault_branch =
-        filter!(x -> get_name(x) != "BUS 1-BUS 3-i_1", collect(get_components(Branch, sys)))
-    sorted_buses =
-        sort!(collect(get_components(ACBus, threebus_sys)); by = x -> get_number(x))
-    Ybus_fault = PNM.Ybus(fault_branch, sorted_buses)[:, :]
-    return Ybus_fault
+    sys_fault = deepcopy(sys)
+    remove_component!(Line, sys_fault, "BUS 1-BUS 3-i_1")
+    return PNM.Ybus(sys_fault)[:, :]
 end
 
 function add_degov_to_omib!(omib_sys)

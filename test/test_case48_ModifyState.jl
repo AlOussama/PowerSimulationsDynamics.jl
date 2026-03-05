@@ -1,4 +1,4 @@
-"""
+﻿"""
 Validation PSSE/HYGOV:
 This case study defines a three bus system with an infinite bus, GENROU+SEXS and a load.
 The perturbation modifies the frequency of the generator by 0.01. The system is the same as Test 26,

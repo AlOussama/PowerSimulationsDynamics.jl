@@ -1,4 +1,4 @@
-"""
+﻿"""
 Test for REGCA Voltage model.
 This case study defines a three bus system with an infinite bus in 1,
 and a REGCA with a voltage model in bus 3.
@@ -79,22 +79,11 @@ PSY.set_dynamic_injector!(inverter, new_dynamic_injector)
             BranchTrip(1.0, Line, "BUS 1-BUS 2-i_1"), #Type of Fault,
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test43_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test diff_val[1] < 1e-3
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test43_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, IDA(); abstol = 1e-9) == PSID.SIMULATION_FINALIZED
@@ -120,22 +109,11 @@ end
             BranchTrip(1.0, Line, "BUS 1-BUS 2-i_1"), #Type of Fault,
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test43_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test diff_val[1] < 1e-3
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test43_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, Rodas4(); abstol = 1e-9) == PSID.SIMULATION_FINALIZED

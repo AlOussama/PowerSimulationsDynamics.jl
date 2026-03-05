@@ -1,17 +1,36 @@
 # This is where we do some type piracy on the PSY types
 get_n_buses(sys::PSY.System) = length(sys.bus_numbers)
 
+# Replacement for removed PF.get_total_p / PF.get_total_q
+function _get_total_p(load::PSY.StandardLoad)
+    return PSY.get_constant_active_power(load) +
+           PSY.get_impedance_active_power(load) +
+           PSY.get_current_active_power(load)
+end
+
+function _get_total_q(load::PSY.StandardLoad)
+    return PSY.get_constant_reactive_power(load) +
+           PSY.get_impedance_reactive_power(load) +
+           PSY.get_current_reactive_power(load)
+end
+
 function _filter_function(x::T) where {T <: PSY.StaticInjection}
     if PSY.get_dynamic_injector(x) === nothing
         return false
     end
 
     if hasfield(T, :status)
-        return PSY.get_status(x) * PSY.get_available(x)
+        status = PSY.get_status(x)
+        if isa(status, Bool)
+            return status && PSY.get_available(x)
+        elseif isa(status, Number)
+             return (status > 0) && PSY.get_available(x)
+        else
+             return PSY.get_available(x)
+        end
     else
         return PSY.get_available(x)
     end
-    error("Filtering of $(PSY.get_name(x)) failed")
 end
 
 function get_injectors_with_dynamics(sys::PSY.System)
@@ -46,6 +65,12 @@ function transform_ybus_to_rectangular(
 )
     # TODO: Improve performance here
     return hcat(vcat(real(ybus), -imag(ybus)), vcat(imag(ybus), real(ybus)))
+end
+
+function transform_ybus_to_rectangular(
+    ybus::SparseArrays.SparseMatrixCSC{Complex{Float32}, Int},
+)
+    return transform_ybus_to_rectangular(SparseArrays.SparseMatrixCSC{Complex{Float64}, Int}(ybus))
 end
 
 function transform_branches_to_dynamic(sys::PSY.System, ::Type{T}) where {T <: PSY.ACBranch}
@@ -148,3 +173,4 @@ function transform_load_to_constant_power(load::PSY.StandardLoad)
     PSY.set_max_impedance_reactive_power!(load, 0.0)
     return
 end
+# Force recompile 03/05/2026 05:42:38

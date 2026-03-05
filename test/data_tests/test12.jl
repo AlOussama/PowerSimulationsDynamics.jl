@@ -1,4 +1,4 @@
-using PowerSystems
+﻿using PowerSystems
 using NLsolve
 const PSY = PowerSystems
 
@@ -48,11 +48,8 @@ for l in get_components(PSY.StandardLoad, threebus_sys)
 end
 
 #Create Ybus_Fault
-fault_branches = deepcopy(collect(get_components(Branch, threebus_sys)))
-for br in fault_branches
-    if get_name(br) == "BUS 1-BUS 2-i_1"
-        br.r = 4 * br.r
-        br.x = 4 * br.x
-    end
-end
-Ybus_fault = PNM.Ybus(fault_branches, collect(get_components(ACBus, threebus_sys)))[:, :];
+threebus_sys_fault = deepcopy(threebus_sys)
+fault_br = get_component(Branch, threebus_sys_fault, "BUS 1-BUS 2-i_1")
+fault_br.r = 4 * fault_br.r
+fault_br.x = 4 * fault_br.x
+Ybus_fault = PNM.Ybus(threebus_sys_fault)[:, :];

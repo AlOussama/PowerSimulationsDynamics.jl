@@ -1,0 +1,230 @@
+Precompiling project...
+  10507.6 ms  Ô£ô PowerSimulationsDynamics
+  1 dependency successfully precompiled in 14 seconds. 333 already precompiled.
+Test Summary: | Pass  Total  Time
+julia         |    1      1  0.0s
+Test Summary:                                                                                  | Pass  Total  Time
+Base.PkgId(Base.UUID("398b2ede-47ed-4edc-b52e-69e4a48b4336"), "PowerSimulationsDynamics") deps |    1      1  0.2s
+Test Summary:                                                                                    | Pass  Total  Time
+Base.PkgId(Base.UUID("398b2ede-47ed-4edc-b52e-69e4a48b4336"), "PowerSimulationsDynamics") extras |    1      1  0.0s
+Test Summary:                                                                                      | Pass  Total  Time
+Base.PkgId(Base.UUID("398b2ede-47ed-4edc-b52e-69e4a48b4336"), "PowerSimulationsDynamics") weakdeps |    1      1  0.0s
+
+test_base: 
+Ôöî Warning: Setting the system unit base from DEVICE_BASE to SYSTEM_BASE for matrix construction
+Ôöö @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:798
+Ôöî Warning: Reactive power at ref bus is outside limits.
+Ôöö @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\post_processing.jl:209
+Ôöî Warning: Initialization non-linear solve convergence failed, initial conditions do not meet conditions for an stable equilibrium.
+Ôöé Attempting again with reduced numeric tolerance and using another solver
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\nlsolve_wrapper.jl:86
+Ôöî Warning: The resulting voltages in the initial conditions differ from the power flow results
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\nlsolve_wrapper.jl:203
+test_case10_staticbranches: Test 10 Static Branches ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:44
+  Expression: diff_val[1] < 0.001
+   Evaluated: 0.941454020874446 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:44 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:27
+Test 10 Static Branches ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:52
+  Expression: LinearAlgebra.norm(eigs - test10_eigvals) < 0.001
+   Evaluated: 8.710273371542193 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:52 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:27
+Ôöî Warning: Setting the system unit base from DEVICE_BASE to SYSTEM_BASE for matrix construction
+Ôöö @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:798
+Ôöî Warning: Reactive power at ref bus is outside limits.
+Ôöö @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\post_processing.jl:209
+Ôöî Warning: Initialization non-linear solve convergence failed, initial conditions do not meet conditions for an stable equilibrium.
+Ôöé Attempting again with reduced numeric tolerance and using another solver
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\nlsolve_wrapper.jl:86
+Ôöî Warning: The resulting voltages in the initial conditions differ from the power flow results
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\nlsolve_wrapper.jl:203
+Test 10 Static Branches MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:90
+  Expression: diff_val[1] < 0.001
+   Evaluated: 0.9414540206530214 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:90 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:73
+Test 10 Static Branches MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:98
+  Expression: LinearAlgebra.norm(eigs - test10_eigvals) < 0.001
+   Evaluated: 8.71027337163281 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:98 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case10_staticbranches.jl:73
+
+Ôöî Warning: Setting the system unit base from DEVICE_BASE to SYSTEM_BASE for matrix construction
+Ôöö @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:798
+Ôöî Warning: Reactive power at ref bus is outside limits.
+Ôöö @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\post_processing.jl:209
+Ôöî Warning: Initialization non-linear solve convergence failed, initial conditions do not meet conditions for an stable equilibrium.
+Ôöé Attempting again with reduced numeric tolerance and using another solver
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\nlsolve_wrapper.jl:86
+Ôöî Warning: The resulting voltages in the initial conditions differ from the power flow results
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\nlsolve_wrapper.jl:203
+test_case11_dynbranches: Test 11 Dynamic Branches ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:46
+  Expression: diff_val[1] < 0.001
+   Evaluated: 0.9414540208744464 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:46 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:27
+Test 11 Dynamic Branches ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:54
+  Expression: LinearAlgebra.norm(eigs - test11_eigvals) < 0.001
+   Evaluated: 20580.722565911095 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:54 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:27
+Ôöî Warning: Setting the system unit base from DEVICE_BASE to SYSTEM_BASE for matrix construction
+Ôöö @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:798
+Ôöî Warning: Reactive power at ref bus is outside limits.
+Ôöö @ PowerFlows C:\Users\User\.julia\packages\PowerFlows\9GMcp\src\post_processing.jl:209
+Ôöî Warning: Initialization non-linear solve convergence failed, initial conditions do not meet conditions for an stable equilibrium.
+Ôöé Attempting again with reduced numeric tolerance and using another solver
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\nlsolve_wrapper.jl:86
+Ôöî Warning: The resulting voltages in the initial conditions differ from the power flow results
+Ôöö @ PowerSimulationsDynamics d:\Projekte\Code\PowerSimulationsDynamics.jl\src\base\nlsolve_wrapper.jl:203
+Test 11 Dynamic Branches MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:86
+  Expression: diff_val[1] < 0.001
+   Evaluated: 0.9414540206530225 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:86 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:69
+Test 11 Dynamic Branches MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:94
+  Expression: LinearAlgebra.norm(eigs - test11_eigvals) < 0.001
+   Evaluated: 20580.72256591106 < 0.001
+
+Stacktrace:
+ [1] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:679 [inlined]
+ [2] macro expansion
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:94 [inlined]
+ [3] macro expansion
+   @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+ [4] top-level scope
+   @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case11_dynbranches.jl:69
+
+test_case12_multimachine: Begin PowerSimulationsDynamics tests: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+  Got exception outside of a @test
+  LoadError: MethodError: no method matching Ybus(::Vector{Branch}, ::Vector{ACBus})
+  The type `Ybus` exists, but no method is defined for this combination of argument types when trying to construct it.
+  
+  Closest candidates are:
+    Ybus(!Matched::System; make_arc_admittance_matrices, network_reductions, include_constant_impedance_loads, subnetwork_algorithm)
+     @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:789
+    Ybus(!Matched::SparseArrays.SparseMatrixCSC{ComplexF32, Int64}, !Matched::SparseArrays.SparseMatrixCSC{Int8, Int64}, !Matched::Ax, !Matched::L, !Matched::Dict{Int64, Ax}, !Matched::Dict{Int64, Vector{Tuple{Int64, Int64}}}, !Matched::NetworkReductionData, !Matched::Union{Nothing, ArcAdmittanceMatrix}, !Matched::Union{Nothing, ArcAdmittanceMatrix}) where {Ax, L<:Tuple{Dict, Dict}}
+     @ PowerNetworkMatrices C:\Users\User\.julia\packages\PowerNetworkMatrices\2qhxA\src\Ybus.jl:51
+  
+  Stacktrace:
+    [1] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\data_tests\test12.jl:57
+    [2] include(fname::String)
+      @ Main .\sysimg.jl:38
+    [3] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case12_multimachine.jl:12
+    [4] include
+      @ .\sysimg.jl:38 [inlined]
+    [5] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:74 [inlined]
+    [6] macro expansion
+      @ C:\Users\User\.julia\juliaup\julia-1.11.5+0.x64.w64.mingw32\share\julia\stdlib\v1.11\Test\src\Test.jl:1704 [inlined]
+    [7] macro expansion
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:120 [inlined]
+    [8] macro expansion
+      @ .\timing.jl:581 [inlined]
+    [9] (::var"#1#4"{ConsoleLogger})(file_logger::InfrastructureSystems.FileLogger)
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:119
+   [10] open_file_logger(func::var"#1#4"{ConsoleLogger}, filename::String, level::Base.CoreLogging.LogLevel, mode::String)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:346
+   [11] open_file_logger(func::Function, filename::String, level::Base.CoreLogging.LogLevel)
+      @ InfrastructureSystems C:\Users\User\.julia\packages\InfrastructureSystems\yetBs\src\utils\logging.jl:343
+   [12] run_tests()
+      @ Main D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:111
+   [13] top-level scope
+      @ D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:131
+   [14] include(fname::String)
+      @ Main .\sysimg.jl:38
+   [15] top-level scope
+      @ none:1
+   [16] eval
+      @ .\boot.jl:430 [inlined]
+   [17] exec_options(opts::Base.JLOptions)
+      @ Base .\client.jl:296
+   [18] _start()
+      @ Base .\client.jl:531
+  in expression starting at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\data_tests\test12.jl:57
+  in expression starting at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case12_multimachine.jl:12
+Test Summary:                                    | Pass  Fail  Error  Total     Time
+Begin PowerSimulationsDynamics tests             |  292     8      1    301  4m37.5s
+  Prog meter enabling                            |    1                   1     0.0s
+  Make Simulation                                |   13                  13    18.9s
+  Solve Twice Simulation                         |    3                   3     3.9s
+  Simulation kwargs: disable_timer_outputs       |    1                   1     0.5s
+  Hybrid Line Indexing                           |   89                  89    12.7s
+  Test initial conditions externally             |    5                   5    15.4s
+  Test Network Kirchoff Calculation              |    4                   4     0.0s
+  Test Network Modification Callback Affects     |  109                 109     0.2s
+  Test Generation perturbations callback affects |    4                   4     0.6s
+  Test Load perturbations callback affects       |    3                   3     0.7s
+  Global Index                                   |    5                   5     0.1s
+  Frequency Reference                            |    2                   2    49.4s
+  Line and Branch transformation                 |   11                  11     5.8s
+  Jacobian                                       |   16                  16     4.0s
+  Jacobian with Delays                           |    6                   6     4.9s
+  Test 01 OMIB ResidualModel                     |   11                  11     1.2s
+  Test 01 OMIB AVR Error                         |    1                   1     0.5s
+  Test 10 Static Branches ResidualModel          |    2     2             4    12.8s
+  Test 10 Static Branches MassMatrixModel        |    2     2             4    12.5s
+  Test 11 Dynamic Branches ResidualModel         |    2     2             4     5.3s
+  Test 11 Dynamic Branches MassMatrixModel       |    2     2             4     9.3s
+ERROR: LoadError: Some tests did not pass: 292 passed, 8 failed, 1 errored, 0 broken.
+in expression starting at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\runtests.jl:130

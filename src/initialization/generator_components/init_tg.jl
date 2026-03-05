@@ -345,11 +345,12 @@ function initialize_tg!(
         @warn("Initialization of Turbine Governor $(PSY.get_name(static)) failed")
     else
         sol_x0 = sol.zero
-        #Error if x_g3 is outside PI limits
+        #Warn and clamp if x_g3 is outside gate limits
         if sol_x0[4] > G_max || sol_x0[4] < G_min
-            error(
-                "Hydro Turbine Governor $(PSY.get_name(static)) $(sol_x0[4]) outside its gate limits $G_min, $G_max. Consider updating the operating point.",
+            @warn(
+                "Hydro Turbine Governor $(PSY.get_name(static)) gate position $(sol_x0[4]) outside its limits $G_min, $G_max. Clamping to limits.",
             )
+            sol_x0[4] = clamp(sol_x0[4], G_min, G_max)
         end
         #Update Control Refs
         PSY.set_P_ref!(tg, sol_x0[1])

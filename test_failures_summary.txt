@@ -1,0 +1,64 @@
+test_case25_multimach_dynlines: Test 25 Marconato with Dynamic Lines ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case25_multimach_dynlines.jl:42
+Test 25 Marconato with Dynamic Lines ResidualModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case25_multimach_dynlines.jl:29
+Test 25 Marconato with Dynamic Lines MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case25_multimach_dynlines.jl:73
+Test 25 Marconato with Dynamic Lines MassMatrixModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case25_multimach_dynlines.jl:60
+test_case29_renewablemodels: RENA: No Flags: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case29_renewablemodels.jl:53
+RENA: Freq Flag: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case29_renewablemodels.jl:53
+RENA: No F_Flag, Ref_Flag = 1, V_Flag = 0, Q_Flag = 0: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case29_renewablemodels.jl:203
+RENA: No F_Flag, Ref_Flag = 1, V_Flag = 0, Q_Flag = 0: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case29_renewablemodels.jl:266
+RENA: No F_Flag, Ref_Flag = 1, V_Flag = 0, Q_Flag = 0: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case29_renewablemodels.jl:246
+RENA: No F_Flag, Ref_Flag = 1, V_Flag = 0, Q_Flag = 0: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case29_renewablemodels.jl:276
+test_case30_ieeest: IEEEST no Filter: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case30_ieeest.jl:49
+IEEEST with Filter: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case30_ieeest.jl:49
+test_case31_hygov: Test 31 HYGOV in Kundur Model: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case31_hygov.jl:124
+Test 31 HYGOV in Kundur Model: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case31_hygov.jl:135
+test_case35_multigen: Test 35 MultiGen ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case35_multigen.jl:34
+Test 35 MultiGen ResidualModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case35_multigen.jl:14
+Test 35 MultiGen MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case35_multigen.jl:77
+Test 35 MultiGen MassMatrixModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case35_multigen.jl:57
+test_case37_InductionMotor: Test 37 5th_order Ind. Motor: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case37_InductionMotor.jl:44
+Test 37 5th_order Ind. Motor: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case37_InductionMotor.jl:48
+Test 37 5th_order Ind. Motor: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case37_InductionMotor.jl:19
+Test 37 5th_order Ind. Motor: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case37_InductionMotor.jl:86
+Test 37 5th_order Ind. Motor: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case37_InductionMotor.jl:90
+Test 37 5th_order Ind. Motor: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case37_InductionMotor.jl:61
+test_case38_SimplifiedIndMotor: Test 38 3rd_order Ind. Motor: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case38_SimplifiedIndMotor.jl:44
+Test 38 3rd_order Ind. Motor: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case38_SimplifiedIndMotor.jl:48
+Test 38 3rd_order Ind. Motor: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case38_SimplifiedIndMotor.jl:19
+Test 38 3rd_order Ind. Motor: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case38_SimplifiedIndMotor.jl:86
+Test 38 3rd_order Ind. Motor: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case38_SimplifiedIndMotor.jl:90
+Test 38 3rd_order Ind. Motor: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case38_SimplifiedIndMotor.jl:61
+test_case39_exst1: Test 39 EXST1 ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case39_exst1.jl:37
+Test 39 EXST1 ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case39_exst1.jl:41
+Test 39 EXST1 ResidualModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case39_exst1.jl:15
+test_case40_exac1: Test 40 EXAC1 ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case40_exac1.jl:45
+Test 40 EXAC1 ResidualModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case40_exac1.jl:25
+Test 40 EXAC1 MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case40_exac1.jl:84
+Test 40 EXAC1 MassMatrixModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case40_exac1.jl:64
+test_case42_dera: DERA: FreqFlag=0: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case42_dera.jl:105
+DERA: FreqFlag=1: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case42_dera.jl:105
+test_case43_regca_voltage: Test 43 REGCA Voltage ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case43_regca_voltage.jl:89
+Test 43 REGCA Voltage MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case43_regca_voltage.jl:119
+test_case45_sauerpai: Test 45 SauerPai ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case45_sauerpai.jl:47
+Test 45 SauerPai ResidualModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case45_sauerpai.jl:22
+Test 45 SauerPai MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case45_sauerpai.jl:95
+Test 45 SauerPai MassMatrixModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case45_sauerpai.jl:75
+test_case50_load_basepower: Begin PowerSimulationsDynamics tests: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case50_load_basepower.jl:95
+Begin PowerSimulationsDynamics tests: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case50_load_basepower.jl:97
+Begin PowerSimulationsDynamics tests: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case50_load_basepower.jl:100
+Begin PowerSimulationsDynamics tests: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case50_load_basepower.jl:102
+test_case55_esst1a: Test 53 ESST1A ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case55_esst1a.jl:95
+Test 53 ESST1A ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case55_esst1a.jl:98
+Test 53 ESST1A ResidualModel: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case55_esst1a.jl:45
+test_case_9bus_systems: Test 32 9-Bus Machine Only System: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case_9bus_systems.jl:19
+Test 32 9-Bus Machine Only System: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case_9bus_systems.jl:29
+test_case_anderson: Test 06 Anderson ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case_anderson.jl:44
+Test 06 Anderson MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case_anderson.jl:77
+test_case_simple_anderson: Test 05 Simple Anderson ResidualModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case_simple_anderson.jl:44
+Test 05 Simple Anderson MassMatrixModel: Test Failed at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_case_simple_anderson.jl:77
+KLU: Error During Test at D:\Projekte\Code\PowerSimulationsDynamics.jl\test\test_sundials.jl:54
+[ERROR][rank 0][/workspace/srcdir/sundials/src/idas/idas.c:5732][IDAHandleFailure] At t = 1 and h = 9.76562499999621e-07, the error test failed repeatedly or with |h| = hmin.
+[ERROR][rank 0][/workspace/srcdir/sundials/src/idas/idas.c:5732][IDAHandleFailure] At t = 1 and h = 9.76562499999621e-07, the error test failed repeatedly or with |h| = hmin.
+[ERROR][rank 0][/workspace/srcdir/sundials/src/idas/idas.c:5732][IDAHandleFailure] At t = 1 and h = 9.76562499999621e-07, the error test failed repeatedly or with |h| = hmin.
+[ERROR][rank 0][/workspace/srcdir/sundials/src/idas/idas.c:5732][IDAHandleFailure] At t = 1 and h = 9.76562499999621e-07, the error test failed repeatedly or with |h| = hmin.
+[ERROR][rank 0][/workspace/srcdir/sundials/src/idas/idas.c:5732][IDAHandleFailure] At t = 1 and h = 3.90624999999973e-06, the error test failed repeatedly or with |h| = hmin.

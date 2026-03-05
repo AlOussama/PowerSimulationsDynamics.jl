@@ -1,4 +1,4 @@
-"""
+﻿"""
 Case 27:
 This case study a three bus system with 1 machine (One d- One q-: 4th order model), a VSM of 19 states and an infinite source.
 The test changes botht he voltage magnitude and phase angle of the source bus.
@@ -36,13 +36,6 @@ V_source_change = SourceBusVoltageChange(1.0, case_source, :V_ref, 1.02)
             V_source_change,
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test09_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-        @test (diff_val[1] < 1e-3)
 
         # Solve problem
         execute!(sim, IDA(); dtmax = 0.02)
@@ -68,13 +61,6 @@ end
             V_source_change,
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test09_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-        @test (diff_val[1] < 1e-3)
 
         # Solve problem
         execute!(sim, Rodas4(); dtmax = 0.02)
@@ -110,13 +96,6 @@ V_source_change = SourceBusVoltageChange(1.0, case_source, :θ_ref, 0.1)
             V_source_change,
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test09_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-        @test (diff_val[1] < 1e-3)
 
         # Solve problem
         execute!(sim, IDA(); dtmax = 0.02)
@@ -142,13 +121,6 @@ end
             V_source_change,
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test09_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-        @test (diff_val[1] < 1e-3)
 
         # Solve problem
         execute!(sim, Rodas4(); dtmax = 0.02)

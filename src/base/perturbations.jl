@@ -363,6 +363,13 @@ mutable struct NetworkSwitch <: Perturbation
     end
 end
 
+function NetworkSwitch(
+    time::Float64,
+    ybus::SparseArrays.SparseMatrixCSC{Complex{Float32}, Int},
+)
+    return NetworkSwitch(time, SparseArrays.SparseMatrixCSC{Complex{Float64}, Int}(ybus))
+end
+
 function NetworkSwitch(time::Float64, ybus::PNM.Ybus)
     return NetworkSwitch(time, ybus.data)
 end

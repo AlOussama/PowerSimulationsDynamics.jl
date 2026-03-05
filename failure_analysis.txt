@@ -1,0 +1,148 @@
+# Test Failure Analysis - PowerSimulationsDynamics.jl
+## Test Results: 699 passed, 42 failed, 17 errored
+
+### ERRORED TESTS (17 errors - Initialization Failures)
+
+**Test 25: Marconato with Dynamic Lines**
+- Error: Residual error too large (0.173) at Generator V_3, state I
+- Stage: Dynamic Device Initialization (NLSolve)
+- PF/PNM: PowerFlows completed successfully
+- Issue: Device initialization cannot converge at new operating point
+
+**Test 29: RENA (Ref_Flag=1, V_Flag=0, Q_Flag=0) - 2 errors**
+- Error: Residual error too large (0.003359) at generator-103-1, state V_cflt
+- Stage: Dynamic Device Initialization (NLSolve)
+- PF/PNM: PowerFlows completed successfully
+- Issue: Renewable model initialization fails to converge
+
+**Test 31: HYGOV in Kundur Model**
+- Error: Voltage bus error too large (58.3) at bus 2
+- Stage: System-level Initialization (refine_initial_condition!)
+- PF/PNM: PowerFlows completed successfully
+- Warning: All 4 HYGOV governors report gate positions outside limits
+- Issue: System NLSolve cannot converge with clamped HYGOV values
+
+**Test 35: MultiGen**
+- Error: "No available sources at bus BUS 2 HV"
+- Stage: PowerFlows (AC Power Flow)
+- PF/PNM: **PowerFlows solver failure**
+- Issue: Bus configuration problem prevents PF from solving
+
+**Test 37: 5th order Induction Motor - 2 errors**
+- Status: TBD - need to check specific error
+
+**Test 38: 3rd order Induction Motor - 2 errors**
+- Status: TBD - need to check specific error
+
+**Test 39: EXST1 - 1 error**
+- Status: Got past HYGOV init crash, now has execution/convergence issues
+
+**Test 40: EXAC1 - 2 errors**
+- Status: Got past HYGOV init crash, now has execution/convergence issues
+
+**Test 45: SauerPai - 2 errors**
+- Status: TBD - need to check specific error
+
+**Test 55: ESST1A - 1 error**
+- Status: Got past HYGOV init crash, now has execution/convergence issues
+
+**Sundials KLU - 1 error**
+- Error: Sundials IDAHandleFailure
+- Stage: Dynamic Simulation (ODE solver)
+
+---
+
+### FAILED TESTS (42 failures - Dynamic Simulation Failures)
+
+**Test 29: RENA (No Flags, Freq Flag) - 2 failures**
+- Error: "simulation failed with return code Unstable"
+- Stage: Dynamic Simulation (ODE integration)
+- PF/PNM: PowerFlows completed successfully
+- Init: Completed successfully
+- Issue: System becomes dynamically unstable during simulation
+
+**Test 30: IEEEST (no Filter, with Filter) - 2 failures**
+- Error: "simulation failed with return code Unstable"
+- Stage: Dynamic Simulation (ODE integration)
+- PF/PNM: PowerFlows completed successfully
+- Init: Completed successfully
+- Issue: System becomes dynamically unstable
+
+**Test 31: HYGOV in Kundur - 2 failures**
+- Additional failures beyond the initialization errors
+
+**Test 32: 9-Bus Machine Only - 2 failures**
+- Status: TBD
+
+**Test 37: 5th order Induction Motor - 4 failures**
+- Status: TBD
+
+**Test 38: 3rd order Induction Motor - 4 failures**
+- Status: TBD
+
+**Test 39: EXST1 - 2 failures**
+- Status: Got past init, simulation issues
+
+**Test 40: EXAC1 - 2 failures**
+- Status: Got past init, simulation issues
+
+**Test 42: DERA (FreqFlag=0, FreqFlag=1) - 2 failures**
+- Status: TBD
+
+**Test 43: REGCA Voltage - 2 failures**
+- Status: TBD
+
+**Test 50: Load BasePower - 4 failures**
+- Status: Specific value comparison tests
+
+**Test 55: ESST1A - 2 failures**
+- Status: Got past init, simulation issues
+
+**Test 06: Anderson - 2 failures**
+- Status: TBD
+
+**Test 05: Simple Anderson - 2 failures**
+- Status: TBD
+
+---
+
+### FAILURE STAGE CATEGORIZATION
+
+**PowerFlows/PNM Stage (1 test):**
+- Test 35: Bus configuration prevents PowerFlow solution
+
+**Dynamic Device Initialization Stage (4 tests):**
+- Test 25: Generator initialization residual error
+- Test 29 (partial): Renewable model init residual error
+- Test 31: System init with HYGOV limit violations
+- Test 45, 37, 38: TBD
+
+**Dynamic Simulation Stage (6+ tests):**
+- Test 29 (partial): Unstable dynamics
+- Test 30: Unstable dynamics
+- Test 42, 43: TBD
+- Test 06, 05: TBD
+- Sundials: Solver convergence failure
+
+**Mixed/Execution Stage (5 tests):**
+- Test 39, 40, 55: Now execute but have simulation issues
+- Test 32, 50: TBD
+
+---
+
+### RELATION TO POWERFLOWS AND PNM
+
+**PowerFlows v0.15 Issues:**
+- Reactive power limit warnings appear frequently (benign)
+- Test 35: Actual PF solver failure (bus configuration)
+- Otherwise: PF solves successfully but produces different operating points vs. PSY3/PF0.6
+
+**PowerNetworkMatrices v0.18.2:**
+- No direct failures attributed to PNM
+- Ybus construction warnings appear but don't cause failures
+
+**Root Cause:**
+- Primary issue: Operating points from Newton-Raphson PF differ from old NLSolve PF
+- This causes dynamic models to initialize at different states
+- Some dynamic models cannot converge at new operating points (init failures)
+- Some systems become dynamically unstable at new operating points (simulation failures)

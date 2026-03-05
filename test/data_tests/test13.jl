@@ -1,4 +1,4 @@
-using PowerSystems
+﻿using PowerSystems
 using NLsolve
 const PSY = PowerSystems
 
@@ -50,5 +50,6 @@ for g in get_components(Generator, threebus_sys)
 end
 
 #Compute Y_bus after fault
-fault_branches = deepcopy(collect(get_components(Branch, threebus_sys))[2:end])
-Ybus_fault = PNM.Ybus(fault_branches, collect(get_components(ACBus, threebus_sys)))[:, :]
+threebus_sys_fault = deepcopy(threebus_sys)
+remove_component!(Line, threebus_sys_fault, "BUS 1-BUS 3-i_1")
+Ybus_fault = PNM.Ybus(threebus_sys_fault)[:, :]

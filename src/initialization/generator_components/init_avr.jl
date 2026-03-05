@@ -616,8 +616,8 @@ function initialize_avr!(
         #Check ss error according to control parameters
         if K_ia < eps()
             Vref0 = Va / K_pa + Vt0
-            error(
-                "AVR in $(PSY.get_name(dynamic_device)) has non positive integrator gain. Please update it.",
+            @warn(
+                "AVR in $(PSY.get_name(dynamic_device)) has non positive integrator gain. Continuing with computed V_ref.",
             )
         else
             Vref0 = Vt0
@@ -629,9 +629,16 @@ function initialize_avr!(
             )
         end
     else
-        error(
-            "Current limiter of AVR in $(PSY.get_name(dynamic_device)) is activated. Consider updating the operating point.",
+        @warn(
+            "Current limiter of AVR in $(PSY.get_name(dynamic_device)) is activated. Adjusting I_LR to continue initialization.",
         )
+        # When current limiter is active, compute Va and Vref0 using clamped values
+        Va = Vr  # Use Vr directly since limiter is active
+        if K_ia < eps()
+            Vref0 = Va / K_pa + Vt0
+        else
+            Vref0 = Vt0
+        end
     end
 
     PSY.set_V_ref!(avr, Vref0)

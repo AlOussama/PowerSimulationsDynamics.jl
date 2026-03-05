@@ -1,4 +1,4 @@
-function get_init_values_for_comparison(sim::Simulation)
+﻿function get_init_values_for_comparison(sim::Simulation)
     bus_size = PSID.get_bus_count(sim.inputs)
     system = PSID.get_system(sim)
     V_R = Vector{Float64}(undef, bus_size)
@@ -38,24 +38,4 @@ function get_init_values_for_comparison(sim::Simulation)
     end
 
     return results
-end
-
-function clean_extra_timestep!(t::Vector{Float64}, δ::Vector{Float64})
-    idx = unique(i -> t[i], 1:length(t))
-    return t[idx], δ[idx]
-end
-
-function get_csv_delta(str::AbstractString)
-    M = readdlm(str, ',')
-    return clean_extra_timestep!(M[:, 1], M[:, 2])
-end
-
-function get_csv_data(str::AbstractString)
-    M_ = readdlm(str, ',')
-    if !(diff(M_[1:10, 1])[1] > 0.0)
-        @warn "First column can't be identified as time, skipping clean up step"
-        return M_
-    end
-    idx = unique(i -> M_[i, 1], 1:length(M_[:, 1]))
-    return M_[idx, :]
 end

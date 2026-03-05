@@ -1,4 +1,4 @@
-"""
+﻿"""
 Validation Power Load
 This case study defines a three bus system with an infinite bus, GENROU and a load.
 The fault drop the line connecting the infinite bus and GENROU. The test validates
@@ -84,7 +84,6 @@ end
         _, p_standard = get_activepower_series(results_standard, "load1031")
         _, p_power = get_activepower_series(results_power, "load1031")
 
-        # Test Transient Simulation Results
         @test LinearAlgebra.norm(v102_power - v102_standard, Inf) <= 1e-3
         @test LinearAlgebra.norm(v103_power - v103_standard, Inf) <= 1e-3
         @test LinearAlgebra.norm(p_power - p_standard, Inf) <= 1e-3
@@ -143,7 +142,6 @@ end
         _, p_standard = get_activepower_series(results_standard, "load1031")
         _, p_power = get_activepower_series(results_power, "load1031")
 
-        # Test Transient Simulation Results
         @test LinearAlgebra.norm(v102_power - v102_standard, Inf) <= 1e-3
         @test LinearAlgebra.norm(v103_power - v103_standard, Inf) <= 1e-3
         @test LinearAlgebra.norm(p_power - p_standard, Inf) <= 1e-3

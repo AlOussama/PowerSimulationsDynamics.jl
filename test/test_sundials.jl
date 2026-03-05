@@ -1,4 +1,4 @@
-"""
+﻿"""
 Test Sundials:
 This case study a three bus system with 1 machine (One d- One q-: 4th order model), a VSM of 19 states and an infinite source. The connection between buses 2 and 3 is modeled using dynamic lines.
 The perturbation trips two of the three circuits of line between buses 1 and 2, triplicating its impedance.

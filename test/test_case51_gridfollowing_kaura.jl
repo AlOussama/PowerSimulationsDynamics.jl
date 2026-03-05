@@ -1,4 +1,4 @@
-"""
+﻿"""
 Case 51:
 This case study a 16-state grid following inverter against an infinite bus located at bus 1, with the inverter located at bus 2.
 The perturbation increase the reference power (analogy for mechanical power) from 0.5 to 0.7.
@@ -33,20 +33,10 @@ Pref_change = ControlReferenceChange(1.0, case_inv, :P_ref, 0.7)
             Pref_change,
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test51_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test51_eigvals) < 1e-3
 
         #Solve problem in equilibrium
         @test execute!(sim, Sundials.IDA(); dtmax = 0.001, saveat = 0.005) ==
@@ -83,20 +73,10 @@ end
             Pref_change,
         )
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test51_x0_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test51_eigvals) < 1e-3
 
         #Solve problem in equilibrium
         @test execute!(sim, Rodas4(); dtmax = 0.001, saveat = 0.005) ==

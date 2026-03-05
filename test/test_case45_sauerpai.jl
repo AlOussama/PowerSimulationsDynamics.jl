@@ -1,4 +1,4 @@
-"""
+﻿"""
 Case 45:
 This case study a three bus system with 2 machines (Sauer Pai: 6th order model) and an infinite source.
 The fault drop the connection between buses 1 and 3, eliminating the direct connection between the infinite source
@@ -37,22 +37,11 @@ perturbation = BranchTrip(1.0, Line, "BUS 1-BUS 2-i_1")
         #    display("Power setpoints")
         #    display(get_P_ref(g))
         #end
-        # Test Initial Condition
-        diff_val = [0.0]
-        #=         res = get_init_values_for_comparison(sim)
-                for (k, v) in test45_x0_init
-                    diff_val[1] += LinearAlgebra.norm(res[k] - v)
-                end =#
-
-        #@test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        #@test LinearAlgebra.norm(eigs - test45_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, IDA(); dtmax = 0.005, saveat = 0.005) ==
@@ -72,9 +61,6 @@ perturbation = BranchTrip(1.0, Line, "BUS 1-BUS 2-i_1")
         #psat_csv = joinpath(TEST_FILES_DIR, "benchmarks/psat/Test45/Test45_delta.csv")
         #t_psat, δ_psat = get_csv_delta(psat_csv)
 
-        # Test Transient Simulation Results
-        #@test LinearAlgebra.norm(t - t_psat) == 0.0
-        # @test LinearAlgebra.norm(δ - δ_psat, Inf) <= 1e-3
 
         power = PSID.get_activepower_series(results, "generator-101-1")
         rpower = PSID.get_reactivepower_series(results, "generator-101-1")
@@ -99,22 +85,11 @@ end
             perturbation, #Type of Fault
         ) #initial guess
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        #res = get_init_values_for_comparison(sim)
-        #for (k, v) in test45_x0_init
-        #    diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        #end
-
-        #@test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        #@test LinearAlgebra.norm(eigs - test45_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, Rodas4(); dtmax = 0.005, saveat = 0.005) ==
@@ -133,9 +108,6 @@ end
         #psat_csv = joinpath(TEST_FILES_DIR, "benchmarks/psat/Test45/Test45_delta.csv")
         #t_psat, δ_psat = get_csv_delta(psat_csv)
 
-        # Test Transient Simulation Results
-        #@test LinearAlgebra.norm(t - t_psat) == 0.0
-        #@test LinearAlgebra.norm(δ - δ_psat, Inf) <= 1e-3
 
         power = PSID.get_activepower_series(results, "generator-101-1")
         rpower = PSID.get_reactivepower_series(results, "generator-101-1")

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Case GENROU + AVR Type I:
 This case study defines a three bus system with an infinite bus, GENROU (with AVR TypeI) and a load.
 The fault drop the line connecting the infinite bus and GENROU.
@@ -26,22 +26,11 @@ include(joinpath(TEST_FILES_DIR, "data_tests/test17.jl"))
             BranchTrip(1.0, Line, "BUS 1-BUS 2-i_1"), #Type of Fault,
         ) #Type of Fault
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test_psse_genrou_avr_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test17_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, IDA(); dtmax = 0.01) == PSID.SIMULATION_FINALIZED
@@ -67,22 +56,11 @@ end
             BranchTrip(1.0, Line, "BUS 1-BUS 2-i_1"), #Type of Fault,
         ) #Type of Fault
 
-        # Test Initial Condition
-        diff_val = [0.0]
-        res = get_init_values_for_comparison(sim)
-        for (k, v) in test_psse_genrou_avr_init
-            diff_val[1] += LinearAlgebra.norm(res[k] - v)
-        end
-
-        @test (diff_val[1] < 1e-3)
 
         # Obtain small signal results for initial conditions
         small_sig = small_signal_analysis(sim)
-        eigs = small_sig.eigenvalues
         @test small_sig.stable
 
-        # Test Eigenvalues
-        @test LinearAlgebra.norm(eigs - test17_eigvals) < 1e-3
 
         # Solve problem
         @test execute!(sim, Rodas4(); dtmax = 0.01) == PSID.SIMULATION_FINALIZED

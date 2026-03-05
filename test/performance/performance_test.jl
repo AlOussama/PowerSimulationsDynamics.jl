@@ -1,4 +1,4 @@
-precompile = @timed using PowerSimulationsDynamics
+﻿precompile = @timed using PowerSimulationsDynamics
 
 using PowerSimulationsDynamics
 const PSID = PowerSimulationsDynamics
